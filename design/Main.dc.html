@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;450;500;600&amp;display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #6ea8ff; } a:hover { color: #9cc4ff; }
+    .m { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; }
+    .line { display: grid; grid-template-columns: 38px minmax(0, 1fr); font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 12.5px; line-height: 1.68; padding: 1px 14px 1px 0; }
+    .gut { color: #4e565f; text-align: right; padding-right: 13px; }
+    .panel { background: #1c2024; border: 1px solid #2c3238; border-radius: 8px; padding: 15px 17px; }
+    .head { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.085em; color: #9aa3ad; }
+    .chip { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 10.5px; border: 1px solid #2c3238; border-radius: 5px; padding: 3px 9px; color: #cdd3d9; }
+    .row { display: grid; grid-template-columns: 80px minmax(0, 1fr) 78px 52px; align-items: baseline; gap: 12px; padding: 8px 0 8px 11px; border-top: 1px solid #262c32; }
+    .st { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .src { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 10.5px; color: #4e565f; text-align: right; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 1180px; overflow: hidden; background: #14171a; color: #e8eaed; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.55; display: flex; flex-direction: column;">
+
+  <div style="height: 44px; flex-shrink: 0; background: #1c2024; border-bottom: 1px solid #2c3238; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#6ea8ff" stroke-width="1.5" stroke-linecap="round">
+        <path d="M2 3.5h12M2 8h8M2 12.5h5"></path>
+      </svg>
+      <span class="m" style="font-size: 12px;">incident-comms</span>
+      <span class="m" style="font-size: 11px; background: #24292e; border-radius: 4px; padding: 2px 8px; color: #9aa3ad;">phishing-credentials</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="m" style="font-size: 10.5px; color: #6ddba0;">8 events from 18 messages</span>
+      <span class="chip">copy all</span>
+      <span class="chip">new thread</span>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; min-height: 0;">
+
+    <div style="width: 40%; flex-shrink: 0; border-right: 1px solid #2c3238; display: flex; flex-direction: column; min-height: 0;">
+      <div style="height: 32px; flex-shrink: 0; border-bottom: 1px solid #2c3238; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+        <span class="head">thread — 18 messages</span>
+        <span class="m" style="font-size: 10.5px; color: #6ddba0; display: flex; align-items: center; gap: 6px;">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="#6ddba0" stroke-width="1.4" stroke-linecap="round"><path d="M7.5 2.5 3.5 6l4 3.5"></path></svg>
+          msg 14 cited by selected row
+        </span>
+      </div>
+
+      <div style="flex-grow: 1; padding: 10px 0; overflow: hidden;">
+        <div class="line" style="opacity: 0.45;"><div class="gut">1</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">0908hrs </span><span style="color: #8fbaff;">Helpdesk:</span> three staff have called about an email from "IT Support" asking them to re-verify their password</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">2</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">9.12am </span><span style="color: #8fbaff;">Helpdesk:</span> sorry, five staff now</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">3</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:15 </span><span style="color: #8fbaff;">SecOps:</span> can someone forward me the full headers</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">4</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:15 </span><span style="color: #8fbaff;">Devi:</span> forwarded. sender domain is not ours</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">5</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:20 </span><span style="color: #8fbaff;">SecOps:</span> confirmed phishing. the link goes to a credential harvesting page on a look-alike domain</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">6</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:24 </span><span style="color: #8fbaff;">Helpdesk:</span> Nadia in Finance says she entered her password before she realised</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">7</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:31 </span><span style="color: #8fbaff;">SecOps:</span> we think about 12 accounts may have submitted credentials</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">8</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:38 </span><span style="color: #8fbaff;">Comms:</span> a reporter from a local outlet has emailed asking whether we have been breached</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">9</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:41 </span><span style="color: #8fbaff;">SecOps:</span> ignore my 09:31 number, that was the click count not the submit count</div></div>
+        <div class="line" style="opacity: 0.3;"><div class="gut">10</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:41 </span><span style="color: #8fbaff;">Devi:</span> coffee run, anyone</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">11</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:47 </span><span style="color: #8fbaff;">SecOps:</span> revising up - 40 accounts clicked the link. submit count still unknown</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">12</div><div style="white-space: pre-wrap;"><span style="color: #f0c07a; font-style: italic;">before lunch </span><span style="color: #8fbaff;">SecOps:</span> forced password reset on all 40, MFA re-enrolment queued</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">13</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">10:15 </span><span style="color: #8fbaff;">IT Ops:</span> this only worked because Nadia's team still had MFA exemptions from the March migration</div></div>
+        <div class="line" style="background: #14301f; box-shadow: inset 2px 0 0 #6ddba0;"><div class="gut" style="color: #6ddba0;">14</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">10:30 </span><span style="color: #8fbaff;">SecOps:</span> confirmed 31 accounts submitted credentials. all 31 reset. no evidence of mailbox access yet</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">15</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">10:33 </span><span style="color: #8fbaff;">Legal:</span> has any personal data left the building</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">16</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">10:52 </span><span style="color: #8fbaff;">SecOps:</span> no evidence of exfiltration at this point. still reviewing sign-in logs</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">17</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">11:05 </span><span style="color: #8fbaff;">Comms:</span> looks like the same group that hit the other agency last month</div></div>
+        <div class="line" style="opacity: 0.45;"><div class="gut">18</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">11:20 </span><span style="color: #8fbaff;">SecOps:</span> no basis for that, we have not attributed anything</div></div>
+      </div>
+
+      <div style="flex-shrink: 0; border-top: 1px solid #262c32; padding: 11px 14px;">
+        <div class="m" style="font-size: 10.5px; color: #4e565f; line-height: 1.6;">10 messages became no event — side chatter, a joke, a withdrawn figure and a rebutted guess. None of them were dropped from the thread.</div>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+
+      <div class="panel" style="background: #20252b;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 11px;">
+          <div style="display: flex; align-items: baseline; gap: 10px;">
+            <span class="head" style="color: #cdd3d9;">holding statement</span>
+            <span class="m" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #6ea8ff; background: #17263a; border-radius: 4px; padding: 2px 7px;">external</span>
+            <span class="m" style="font-size: 10.5px; color: #6b747d;">this one leaves the building</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 9px;">
+            <span class="m" style="font-size: 10.5px; color: #6b747d;">62 / 120 words</span>
+            <span class="chip">copy</span>
+          </div>
+        </div>
+        <p style="font-size: 14.5px; line-height: 1.65; margin: 0; text-wrap: pretty; color: #f0f2f4;">We are responding to a phishing email sent to some of our staff, purporting to come from IT Support. The link led to a credential-harvesting page on a look-alike domain. Affected accounts have been reset and sign-in logs are under review. We have seen <span style="border-bottom: 1px solid #3d6b52;">no evidence of data leaving our systems</span>; that review is not yet complete. A further update will follow by 14:00.</p>
+        <div style="display: flex; gap: 7px; flex-wrap: wrap; margin: 14px 0 0; padding: 12px 0 0; border-top: 1px solid #2c3238;">
+          <span class="m" style="font-size: 10px; color: #7b848d; background: #1a1e22; border-radius: 4px; padding: 3px 8px;">no cause named</span>
+          <span class="m" style="font-size: 10px; color: #7b848d; background: #1a1e22; border-radius: 4px; padding: 3px 8px;">no individuals</span>
+          <span class="m" style="font-size: 10px; color: #7b848d; background: #1a1e22; border-radius: 4px; padding: 3px 8px;">no assurance of absence</span>
+          <span class="m" style="font-size: 10px; color: #7b848d; background: #1a1e22; border-radius: 4px; padding: 3px 8px;">confirmed facts only</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 11px;">
+          <div style="display: flex; align-items: baseline; gap: 10px;">
+            <span class="head">internal update</span>
+            <span class="m" style="font-size: 10.5px; color: #6b747d;">candid, still no names</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 9px;">
+            <span class="m" style="font-size: 10.5px; color: #6b747d;">71 / 150</span>
+            <span class="chip">copy</span>
+          </div>
+        </div>
+        <p style="font-size: 13.5px; line-height: 1.62; margin: 0 0 10px;"><span class="m" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #6ddba0; background: #14301f; border-radius: 4px; padding: 2px 7px; margin-right: 8px;">confirmed</span>31 accounts submitted credentials, all reset. Forced reset on all 40 that clicked, MFA re-enrolment queued. No evidence of mailbox access; sign-in log review continues.</p>
+        <p style="font-size: 13.5px; line-height: 1.62; margin: 0;"><span class="m" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #f0c07a; background: #33260f; border-radius: 4px; padding: 2px 7px; margin-right: 8px;">unconfirmed</span>The 09:31 figure of 12 was withdrawn — it counted clicks, not submissions. An attribution guess was rebutted in-thread; nothing has been attributed. Do not repeat it outside this channel.</p>
+      </div>
+
+      <div class="panel">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 2px;">
+          <span class="head">timeline — 8 events</span>
+          <span class="m" style="font-size: 10.5px; color: #6b747d;">select a row to find its message</span>
+        </div>
+        <div class="row" style="border-top: none; box-shadow: inset 2px 0 0 #2f6b46;">
+          <span class="m" style="font-size: 11.5px; color: #9aa3ad;">09:08</span>
+          <span style="font-size: 13px; line-height: 1.45;">First reports of an email asking staff to re-verify their password</span>
+          <span class="st" style="color: #6ddba0;">confirmed</span>
+          <span class="src">msg 1</span>
+        </div>
+        <div class="row" style="box-shadow: inset 2px 0 0 #2f6b46;">
+          <span class="m" style="font-size: 11.5px; color: #9aa3ad;">09:20</span>
+          <span style="font-size: 13px; line-height: 1.45;">Confirmed as phishing; link resolves to a credential-harvesting page on a look-alike domain</span>
+          <span class="st" style="color: #6ddba0;">confirmed</span>
+          <span class="src">msg 5</span>
+        </div>
+        <div class="row" style="box-shadow: inset 2px 0 0 #2f6b46;">
+          <span class="m" style="font-size: 11.5px; color: #9aa3ad;">09:24</span>
+          <span style="font-size: 13px; line-height: 1.45;">A member of Finance staff reports entering a password before realising</span>
+          <span class="st" style="color: #6ddba0;">confirmed</span>
+          <span class="src">msg 6</span>
+        </div>
+        <div class="row" style="box-shadow: inset 2px 0 0 #8a6318;">
+          <span class="m" style="font-size: 11.5px; color: #9aa3ad;">09:31</span>
+          <span style="font-size: 13px; line-height: 1.45;">Estimate of about 12 submitted accounts — withdrawn at 09:41 as a click count</span>
+          <span class="st" style="color: #f0c07a;">alleged</span>
+          <span class="src">msg 7</span>
+        </div>
+        <div class="row" style="box-shadow: inset 2px 0 0 #2f6b46;">
+          <span class="m" style="font-size: 11.5px; color: #9aa3ad;">09:38</span>
+          <span style="font-size: 13px; line-height: 1.45;">A local outlet asks whether the organisation has been breached</span>
+          <span class="st" style="color: #6ddba0;">confirmed</span>
+          <span class="src">msg 8</span>
+        </div>
+        <div class="row" style="box-shadow: inset 2px 0 0 #2f6b46;">
+          <span class="m" style="font-size: 11.5px; color: #9aa3ad;">09:47</span>
+          <span style="font-size: 13px; line-height: 1.45;">Revised upward: 40 accounts clicked the link; submit count still unknown</span>
+          <span class="st" style="color: #6ddba0;">confirmed</span>
+          <span class="src">msg 11</span>
+        </div>
+        <div class="row" style="box-shadow: inset 2px 0 0 #2f6b46;">
+          <span class="m" style="font-size: 11.5px; color: #f0c07a; font-style: italic;">before lunch</span>
+          <span style="font-size: 13px; line-height: 1.45;">Forced password reset on all 40 accounts; MFA re-enrolment queued</span>
+          <span class="st" style="color: #6ddba0;">confirmed</span>
+          <span class="src">msg 12</span>
+        </div>
+        <div class="row" style="background: #14301f; box-shadow: inset 2px 0 0 #6ddba0; margin: 0 -17px; padding-left: 28px; padding-right: 17px;">
+          <span class="m" style="font-size: 11.5px; color: #6ddba0;">10:30</span>
+          <span style="font-size: 13px; line-height: 1.45;">31 accounts confirmed to have submitted credentials; all reset</span>
+          <span class="st" style="color: #6ddba0;">confirmed</span>
+          <span class="src" style="color: #6ddba0;">msg 14</span>
+        </div>
+        <p class="m" style="font-size: 10.5px; color: #4e565f; margin: 13px 0 0; line-height: 1.65;">msg 12 timestamp unreadable, kept in thread order · msgs 3 + 4 both claim 09:15 · msgs 9 + 10 both claim 09:41 · order within each pair unresolved</p>
+      </div>
+
+      <div class="panel">
+        <div class="head" style="margin-bottom: 11px;">still open — 4</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 11px;"><span class="m" style="font-size: 10.5px; color: #4e565f; flex-shrink: 0;">01</span><span style="font-size: 12.5px; line-height: 1.5;">Has any personal data left the environment? The sign-in log review is not complete.</span></div>
+          <div style="display: flex; gap: 11px;"><span class="m" style="font-size: 10.5px; color: #4e565f; flex-shrink: 0;">02</span><span style="font-size: 12.5px; line-height: 1.5;">Reconcile 40 clicked against 31 submitted before the next update goes out.</span></div>
+          <div style="display: flex; gap: 11px;"><span class="m" style="font-size: 10.5px; color: #4e565f; flex-shrink: 0;">03</span><span style="font-size: 12.5px; line-height: 1.5;">Who replies to the outlet, and by when?</span></div>
+          <div style="display: flex; gap: 11px;"><span class="m" style="font-size: 10.5px; color: #4e565f; flex-shrink: 0;">04</span><span style="font-size: 12.5px; line-height: 1.5;">Confirm whether any of the 31 reset accounts had mailbox access.</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="height: 28px; flex-shrink: 0; background: #1c2024; border-top: 1px solid #2c3238; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+    <span class="m" style="font-size: 10.5px; color: #6ddba0;">done — parsed server-side, 1 round</span>
+    <span class="m" style="font-size: 10.5px; color: #4e565f;">in 2,481 · out 1,986 · 16.2 s · deepseek-v4-flash · reasoning minimal</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

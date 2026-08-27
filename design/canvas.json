@@ -1,0 +1,137 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Ops Console"
+    },
+    {
+      "id": "page-2",
+      "name": "Directions not taken"
+    },
+    {
+      "id": "page-3",
+      "name": "Icon & logo"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "ConsoleInput.dc.html",
+      "title": "Paste \u2014 before the model runs",
+      "page": "page-1",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1180
+    },
+    {
+      "file": "Main.dc.html",
+      "title": "Results \u2014 dark",
+      "page": "page-1",
+      "x": 1560,
+      "y": 0,
+      "w": 1440,
+      "h": 1180
+    },
+    {
+      "file": "ConsoleLight.dc.html",
+      "title": "Results \u2014 light",
+      "page": "page-1",
+      "x": 3120,
+      "y": 0,
+      "w": 1440,
+      "h": 1180
+    },
+    {
+      "file": "DeskInput.dc.html",
+      "title": "A \u00b7 Duty Desk \u2014 paste",
+      "page": "page-2",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1180
+    },
+    {
+      "file": "DeskResults.dc.html",
+      "title": "A \u00b7 Duty Desk \u2014 results",
+      "page": "page-2",
+      "x": 1560,
+      "y": 0,
+      "w": 1440,
+      "h": 1180
+    },
+    {
+      "file": "LedgerInput.dc.html",
+      "title": "B \u00b7 Evidence Ledger \u2014 paste",
+      "page": "page-2",
+      "x": 0,
+      "y": 1360,
+      "w": 1440,
+      "h": 1180
+    },
+    {
+      "file": "LedgerResults.dc.html",
+      "title": "B \u00b7 Evidence Ledger \u2014 results",
+      "page": "page-2",
+      "x": 1560,
+      "y": 1360,
+      "w": 1440,
+      "h": 1180
+    },
+    {
+      "file": "Logo.dc.html",
+      "title": "Logo",
+      "page": "page-3",
+      "x": 0,
+      "y": 0,
+      "w": 1200,
+      "h": 760
+    },
+    {
+      "file": "Icon.dc.html",
+      "title": "App icon",
+      "page": "page-3",
+      "x": 1320,
+      "y": 0,
+      "w": 1000,
+      "h": 760
+    }
+  ],
+  "annotations": [
+    {
+      "id": "console-revision",
+      "page": "page-1",
+      "x": -430,
+      "y": 40,
+      "w": 350,
+      "text": "C \u00b7 OPS CONSOLE \u2014 revised\n\nWhat changed from the sketch:\n\n1. It doubles. The third artboard is the same screen in the app's existing light tokens, so this is not a dark-only tool. Comms and Legal get a screen they can read.\n\n2. The holding statement is no longer just the first panel. It sits on a lighter ground at 14.5px with an 'external \u2014 this one leaves the building' label, because it is the artefact that can do damage.\n\n3. Under it, four chips name the rules it was held to: no cause, no individuals, no assurance of absence, confirmed facts only.\n\n4. Status is now a coloured rail on every timeline row, not only a word \u2014 scannable at a glance.\n\n5. The thread pane foots with what did NOT become an event, and says none of it was dropped."
+    },
+    {
+      "id": "dir-a",
+      "page": "page-2",
+      "x": -430,
+      "y": 40,
+      "w": 350,
+      "text": "A \u00b7 DUTY DESK \u2014 not taken\n\nThe existing app, tightened. Zero learning curve, ships tomorrow.\n\nWhy not: nothing about it says the app exercises judgement. It looks like a formatter."
+    },
+    {
+      "id": "dir-b",
+      "page": "page-2",
+      "x": -430,
+      "y": 1400,
+      "w": 350,
+      "text": "B \u00b7 EVIDENCE LEDGER \u2014 not taken\n\nProvenance as the product: the holding statement as the object that leaves the building, with a margin column listing what was deliberately kept out.\n\nWhy not: warm and editorial, slower to scan at 2am. The 'kept out' column is still the best idea in the set \u2014 it is a schema change, not a look, so it can be lifted into C."
+    },
+    {
+      "id": "identity-note",
+      "page": "page-3",
+      "x": -430,
+      "y": 40,
+      "w": 350,
+      "text": "THE MARK\n\nIt is one timeline row, abstracted: the coloured status rail, and the text it stands beside \u2014 the single element the Ops Console is built from.\n\nRead the other way it is a blockquote \u2014 a statement someone is standing behind, which is what a holding statement is.\n\nThe two bars are different lengths on purpose: eighteen messages come in, eight events go out.\n\nNo detail exists below what survives at 16px, so the favicon is the logo, not a redraw of it."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-3"
+  }
+}
