@@ -1,0 +1,12 @@
+name = "incident-comms"
+main = "src/index.js"
+compatibility_date = "2025-08-01"
+
+# Serve the page from a plain HTML file, imported as a string.
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = false
+
+# OPENCODE_API_KEY is set with `wrangler secret put` for deploys and `.env` for
+# local development. Never put it in this file.

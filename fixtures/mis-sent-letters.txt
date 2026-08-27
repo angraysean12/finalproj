@@ -1,0 +1,10 @@
+09:15 Sarah Lim: we've had three calls this morning about letters going to the wrong address
+09:40 Ops: confirmed, the March batch went out with a misaligned mail merge
+9.05am Contact Centre: first caller came in around nine, said they got someone else's letter
+10:20 Legal: how many records, and did any of them contain NRIC numbers
+09:55 Ops: batch was 1,240 letters. Cannot confirm yet how many were misaddressed
+10:25 Dev: pretty sure this is the same template bug Sarah flagged in January
+10:30 Ops: printing supplier has paused the April batch pending our go-ahead
+1045: Legal: treat as a potential data breach until we know the record count
+10:50 Comms: drafting something for the website, will hold until we have numbers
+11:15 Ops: 1,240 letters confirmed, misaddressed count still unknown

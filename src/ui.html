@@ -1,0 +1,201 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Incident Comms</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #fff; --ink: #16191d; --muted: #6b7280;
+    --line: #e3e6ea; --accent: #1f6feb;
+    --confirmed: #0a7c42; --confirmed-bg: #e6f4ec;
+    --alleged: #9a5b00; --alleged-bg: #fdf1de;
+    --unknown: #6b7280; --unknown-bg: #eef0f2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171a; --card: #1c2024; --ink: #e8eaed; --muted: #9aa3ad;
+      --line: #2c3238; --accent: #6ea8ff;
+      --confirmed: #6ddba0; --confirmed-bg: #14301f;
+      --alleged: #f0c07a; --alleged-bg: #33260f;
+      --unknown: #9aa3ad; --unknown-bg: #24292e;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1.25rem 4rem; background: var(--bg); color: var(--ink);
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  main { max-width: 68rem; margin: 0 auto; }
+  h1 { font-size: 1.35rem; margin: 0 0 .3rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  textarea {
+    width: 100%; min-height: 12rem; padding: .8rem; border: 1px solid var(--line);
+    border-radius: 8px; background: var(--card); color: var(--ink); resize: vertical;
+    font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .row { display: flex; gap: .6rem; align-items: center; margin: .8rem 0 0; flex-wrap: wrap; }
+  button {
+    font: inherit; padding: .5rem .95rem; border-radius: 7px; border: 1px solid var(--line);
+    background: var(--card); color: var(--ink); cursor: pointer;
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button:disabled { opacity: .55; cursor: default; }
+  .status { color: var(--muted); font-size: .9rem; }
+  .panes { display: grid; gap: 1rem; margin-top: 1.5rem; grid-template-columns: 1fr; }
+  @media (min-width: 62rem) { .panes { grid-template-columns: 1fr 1fr; } .wide { grid-column: 1 / -1; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; }
+  .card h2 { font-size: .78rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin: 0 0 .1rem; }
+  .card header { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: .6rem; }
+  .card p { margin: 0; white-space: pre-wrap; }
+  .card header button { padding: .2rem .5rem; font-size: .78rem; }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th { text-align: left; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 0 .5rem .4rem 0; }
+  td { padding: .45rem .5rem .45rem 0; border-top: 1px solid var(--line); vertical-align: top; }
+  td.time { font-family: ui-monospace, Menlo, monospace; white-space: nowrap; color: var(--muted); }
+  .badge { display: inline-block; padding: .06rem .45rem; border-radius: 99px; font-size: .72rem; font-weight: 600; text-transform: capitalize; }
+  .badge.confirmed { color: var(--confirmed); background: var(--confirmed-bg); }
+  .badge.alleged { color: var(--alleged); background: var(--alleged-bg); }
+  .badge.unknown { color: var(--unknown); background: var(--unknown-bg); }
+  .src { color: var(--muted); font-size: .8rem; font-family: ui-monospace, Menlo, monospace; white-space: nowrap; }
+  ul { margin: 0; padding-left: 1.1rem; }
+  li { margin-bottom: .3rem; }
+  .hidden { display: none; }
+  .error { color: #b4232c; }
+  @media (prefers-color-scheme: dark) { .error { color: #ff9098; } }
+</style>
+
+<main>
+  <h1>Incident Comms</h1>
+  <p class="sub">Paste a messy incident thread. Get a holding statement, an internal update and a sourced timeline.</p>
+
+  <textarea id="thread" placeholder="14:32 Ops: users reporting timeouts on the portal&#10;14:35 Dev: probably the database again&#10;..."></textarea>
+
+  <div class="row">
+    <button class="primary" id="draft">Draft comms</button>
+    <button id="example">Load example</button>
+    <span class="status" id="status"></span>
+  </div>
+
+  <section class="panes hidden" id="panes">
+    <div class="card">
+      <header><h2>Holding statement · external</h2><button data-copy="holding">Copy</button></header>
+      <p id="holding"></p>
+    </div>
+    <div class="card">
+      <header><h2>Internal update</h2><button data-copy="internal">Copy</button></header>
+      <p id="internal"></p>
+    </div>
+    <div class="card wide">
+      <header><h2>Timeline</h2></header>
+      <table>
+        <thead><tr><th>Time</th><th>Event</th><th>Status</th><th>Source</th></tr></thead>
+        <tbody id="timeline"></tbody>
+      </table>
+    </div>
+    <div class="card wide hidden" id="questionsCard">
+      <header><h2>Still open</h2></header>
+      <ul id="questions"></ul>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  const EXAMPLE = `14:47 Priya: anyone else seeing the appointment portal time out?
+14:32 Ops: getting reports of timeouts on the booking portal, looking now
+14:52 Dev: it's the database again, same as last month
+14:41 Ops: confirmed - portal is returning 504s for about half of requests
+15:10 Comms: do we need to say anything publicly yet
+14:52 Ravi: lol it's always the database
+15:02 Ops: failed over to the standby replica, error rate dropping
+sometime around 3: Dev: root cause looks like the connection pool, not confirmed
+15:20 Ops: error rate back to normal, monitoring for another 30 min`;
+
+  const el = (id) => document.getElementById(id);
+  const statusEl = el("status");
+
+  el("example").addEventListener("click", () => { el("thread").value = EXAMPLE; });
+
+  el("draft").addEventListener("click", async () => {
+    const thread = el("thread").value.trim();
+    if (!thread) { setStatus("Paste a thread first.", true); return; }
+
+    el("draft").disabled = true;
+    setStatus("Reading the thread…");
+
+    try {
+      const res = await fetch("/draft", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ thread }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+      render(data);
+      setStatus("");
+    } catch (err) {
+      setStatus(err.message, true);
+    } finally {
+      el("draft").disabled = false;
+    }
+  });
+
+  document.querySelectorAll("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(el(button.dataset.copy).textContent);
+      const was = button.textContent;
+      button.textContent = "Copied";
+      setTimeout(() => { button.textContent = was; }, 1200);
+    });
+  });
+
+  function setStatus(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.classList.toggle("error", isError);
+  }
+
+  // Everything below comes from the model and is therefore untrusted markup.
+  // Build with textContent and createElement only, never innerHTML.
+  function render(data) {
+    el("holding").textContent = data.holding ?? "";
+    el("internal").textContent = data.internal ?? "";
+
+    const body = el("timeline");
+    body.replaceChildren();
+    for (const row of data.timeline ?? []) {
+      const tr = document.createElement("tr");
+      tr.append(
+        cell(row.time ?? "", "time"),
+        cell(row.event ?? ""),
+        badgeCell(row.status),
+        cell(row.source ? `msg ${row.source}` : "—", "src"),
+      );
+      body.append(tr);
+    }
+
+    const questions = data.openQuestions ?? [];
+    el("questionsCard").classList.toggle("hidden", questions.length === 0);
+    el("questions").replaceChildren(...questions.map((q) => {
+      const li = document.createElement("li");
+      li.textContent = q;
+      return li;
+    }));
+
+    el("panes").classList.remove("hidden");
+  }
+
+  function cell(text, className) {
+    const td = document.createElement("td");
+    td.textContent = text;
+    if (className) td.className = className;
+    return td;
+  }
+
+  function badgeCell(status) {
+    const known = ["confirmed", "alleged", "unknown"];
+    const value = known.includes(status) ? status : "unknown";
+    const span = document.createElement("span");
+    span.className = `badge ${value}`;
+    span.textContent = value;
+    const td = document.createElement("td");
+    td.append(span);
+    return td;
+  }
+</script>

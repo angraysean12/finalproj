@@ -1,0 +1,9 @@
+14:47 Priya: anyone else seeing the appointment portal time out?
+14:32 Ops: getting reports of timeouts on the booking portal, looking now
+14:52 Dev: it's the database again, same as last month
+14:41 Ops: confirmed - portal is returning 504s for about half of requests
+15:10 Comms: do we need to say anything publicly yet
+14:52 Ravi: lol it's always the database
+15:02 Ops: failed over to the standby replica, error rate dropping
+sometime around 3: Dev: root cause looks like the connection pool, not confirmed
+15:20 Ops: error rate back to normal, monitoring for another 30 min
