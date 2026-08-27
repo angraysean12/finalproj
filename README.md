@@ -32,17 +32,25 @@ completions endpoint with the tools from `src/tools.js`.
 
 ```
 POST /draft {thread}
-  round 1  model extracts messages, calls normalise_and_sort_events
-  round 2  model drafts from the sorted events, calls emit_incident_comms
+  parseThread + normaliseAndSortEvents          (server-side, no model)
+  one round   model judges the ordered events, calls emit_incident_comms
   → that call's arguments are the response
+
+  fallback, when the paste cannot be parsed:
+  round 1     model extracts messages, calls normalise_and_sort_events
+  round 2     model drafts from the sorted events, calls emit_incident_comms
 ```
 
 Two tools:
 
 | Tool | What it does |
 | --- | --- |
-| `normalise_and_sort_events` | Orders extracted messages by time; flags unreadable timestamps and clashes. Pure, and the only tested logic. |
+| `normalise_and_sort_events` | Orders extracted messages by time; flags unreadable timestamps and clashes. Only reached on the fallback path — the fast path calls the same pure function directly. |
 | `emit_incident_comms` | Definition only. Its schema **is** the response contract. |
+
+`parseThread` reads `<time> <speaker>: <text>` lines server-side, so the model never has
+to re-type the thread as JSON just to get it sorted. On the fast path only
+`emit_incident_comms` is offered, which is what collapses the run to one round.
 
 **Terminating on `emit_incident_comms` is what guarantees the response shape.** The
 loop returns that call's arguments rather than parsing prose, so there is no free-text

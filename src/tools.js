@@ -11,6 +11,64 @@
 export const STATUSES = ["confirmed", "alleged", "unknown"];
 
 // ---------------------------------------------------------------------------
+// parseThread
+// ---------------------------------------------------------------------------
+
+/**
+ * A thread line is "<time> <speaker>: <text>", where the time may itself contain
+ * a colon ("09:15 Ops: ...") or be unreadable prose ("before lunch SecOps: ...",
+ * "sometime around 3: Dev: ...").
+ *
+ * The prefix is bounded and the speaker must be capitalised, so the lazy prefix
+ * matches at the FIRST capitalised-word-then-colon. That is the speaker, and
+ * everything before it is the time — which is why a colon inside the timestamp
+ * does not fool it, and why a capitalised word inside the message body does not
+ * either.
+ */
+const LINE = /^(.{0,48}?)\b([A-Z][A-Za-z.'-]*(?: [A-Z][A-Za-z.'-]*)?):\s+(.*)$/;
+
+/**
+ * Split a pasted thread into events, server-side.
+ *
+ * This exists to keep the model from having to re-type the whole thread as JSON
+ * just so it can be sorted: that transcription was the single largest source of
+ * generated tokens, and therefore of latency. Doing it here in ~20 lines removes
+ * an entire model round-trip.
+ *
+ * Pure. Returns [] when the text does not look like a thread at all, which is the
+ * signal for the caller to fall back to asking the model to extract instead.
+ */
+export function parseThread(text) {
+  const events = [];
+
+  for (const raw of String(text ?? "").split("\n")) {
+    const line = raw.trim();
+    if (line === "") continue;
+
+    const match = LINE.exec(line);
+    if (match) {
+      const [, time, speaker, body] = match;
+      events.push({
+        time: time.trim().replace(/[:\s]+$/, ""),
+        speaker,
+        text: body.trim(),
+      });
+      continue;
+    }
+
+    // A line that is not "time speaker: text" is a continuation of the message
+    // above it — a pasted message that wrapped, most often. Never drop it.
+    if (events.length > 0) {
+      events[events.length - 1].text += ` ${line}`;
+    } else {
+      events.push({ time: "", speaker: "unknown", text: line });
+    }
+  }
+
+  return events;
+}
+
+// ---------------------------------------------------------------------------
 // Definitions sent to the model
 // ---------------------------------------------------------------------------
 
@@ -97,6 +155,21 @@ export const toolDefinitions = [
     },
   },
 ];
+
+export const EMIT_TOOL = "emit_incident_comms";
+
+/**
+ * The tools to offer for one run.
+ *
+ * When the thread was parsed and sorted on the server there is nothing left for
+ * the model to do but judge, so withholding the sort tool is what collapses the
+ * run to a single round — the model cannot spend a round-trip on it.
+ */
+export function toolsFor(preSorted) {
+  return preSorted
+    ? toolDefinitions.filter((t) => t.function.name === EMIT_TOOL)
+    : toolDefinitions;
+}
 
 export async function executeTool(name, args) {
   switch (name) {

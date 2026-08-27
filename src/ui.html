@@ -118,7 +118,7 @@ sometime around 3: Dev: root cause looks like the connection pool, not confirmed
     if (!thread) { setStatus("Paste a thread first.", true); return; }
 
     el("draft").disabled = true;
-    setStatus("Reading the thread…");
+    const stopTicking = startTicking();
 
     try {
       const res = await fetch("/draft", {
@@ -128,14 +128,40 @@ sometime around 3: Dev: root cause looks like the connection pool, not confirmed
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+      stopTicking();
       render(data);
       setStatus("");
     } catch (err) {
+      stopTicking();
       setStatus(err.message, true);
     } finally {
       el("draft").disabled = false;
     }
   });
+
+  // The model reasons for a minute or more before the first token, so a static
+  // label is indistinguishable from a hang. Show elapsed time and name the stage
+  // the loop is actually in.
+  function startTicking() {
+    const started = Date.now();
+    const stages = [
+      [0, "Reading the thread"],
+      [20, "Sorting the timeline"],
+      [45, "Weighing what is confirmed"],
+      [90, "Drafting the statements"],
+      [150, "Still going — long threads take a while"],
+    ];
+
+    const tick = () => {
+      const seconds = Math.round((Date.now() - started) / 1000);
+      const [, label] = stages.filter(([at]) => seconds >= at).at(-1);
+      setStatus(`${label}… ${seconds}s`);
+    };
+
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }
 
   document.querySelectorAll("[data-copy]").forEach((button) => {
     button.addEventListener("click", async () => {
