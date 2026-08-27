@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #6ea8ff; } a:hover { color: #9cc4ff; }
+    .cs-mono { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; }
+    .cs-line { display: grid; grid-template-columns: 40px minmax(0, 1fr); font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 12.5px; line-height: 1.7; padding: 1px 14px 1px 0; }
+    .cs-gutter { color: #545c65; text-align: right; padding-right: 14px; }
+    .cs-panel { background: #1c2024; border: 1px solid #2c3238; border-radius: 8px; padding: 14px 16px; }
+    .cs-head { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: #9aa3ad; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 1180px; overflow: hidden; background: #14171a; color: #e8eaed; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 1.55; display: flex; flex-direction: column;">
+
+  <div style="height: 44px; flex-shrink: 0; background: #1c2024; border-bottom: 1px solid #2c3238; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#6ea8ff" stroke-width="1.5" stroke-linecap="round">
+        <path d="M2 3.5h12M2 8h8M2 12.5h5"></path>
+      </svg>
+      <span class="cs-mono" style="font-size: 12px; color: #e8eaed;">incident-comms</span>
+      <span class="cs-mono" style="font-size: 11px; background: #24292e; border-radius: 4px; padding: 2px 8px; color: #9aa3ad;">fixture: phishing-credentials</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="cs-mono" style="font-size: 10.5px; color: #545c65;">cmd+enter</span>
+      <span class="cs-mono" style="font-size: 10.5px; border: 1px solid #2c3238; border-radius: 5px; padding: 3px 9px; color: #cdd3d9;">clear</span>
+      <span class="cs-mono" style="font-size: 10.5px; border: 1px solid #2c3238; border-radius: 5px; padding: 3px 9px; color: #cdd3d9;">load fixture</span>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1; display: flex; min-height: 0;">
+
+    <div style="width: 46%; flex-shrink: 0; border-right: 1px solid #2c3238; display: flex; flex-direction: column; min-height: 0;">
+      <div style="height: 30px; flex-shrink: 0; border-bottom: 1px solid #2c3238; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+        <span class="cs-head">thread — 18 messages</span>
+        <span class="cs-head" style="color: #545c65;">paste or pick a fixture</span>
+      </div>
+      <div style="padding: 10px 0; overflow: hidden;">
+        <div class="cs-line"><div class="cs-gutter">1</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">0908hrs </span><span style="color: #8fbaff;">Helpdesk:</span> three staff have called about an email from "IT Support" asking them to re-verify their password</div></div>
+        <div class="cs-line"><div class="cs-gutter">2</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">9.12am </span><span style="color: #8fbaff;">Helpdesk:</span> sorry, five staff now</div></div>
+        <div class="cs-line" style="background: #1f2328; box-shadow: inset 2px 0 0 #f0c07a;"><div class="cs-gutter">3</div><div style="white-space: pre-wrap;"><span style="color: #f0c07a;">09:15 </span><span style="color: #8fbaff;">SecOps:</span> can someone forward me the full headers</div></div>
+        <div class="cs-line" style="background: #1f2328; box-shadow: inset 2px 0 0 #f0c07a;"><div class="cs-gutter">4</div><div style="white-space: pre-wrap;"><span style="color: #f0c07a;">09:15 </span><span style="color: #8fbaff;">Devi:</span> forwarded. sender domain is not ours</div></div>
+        <div class="cs-line"><div class="cs-gutter">5</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:20 </span><span style="color: #8fbaff;">SecOps:</span> confirmed phishing. the link goes to a credential harvesting page on a look-alike domain</div></div>
+        <div class="cs-line"><div class="cs-gutter">6</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:24 </span><span style="color: #8fbaff;">Helpdesk:</span> Nadia in Finance says she entered her password before she realised</div></div>
+        <div class="cs-line"><div class="cs-gutter">7</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:31 </span><span style="color: #8fbaff;">SecOps:</span> we think about 12 accounts may have submitted credentials</div></div>
+        <div class="cs-line"><div class="cs-gutter">8</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:38 </span><span style="color: #8fbaff;">Comms:</span> a reporter from a local outlet has emailed asking whether we have been breached</div></div>
+        <div class="cs-line" style="background: #1f2328; box-shadow: inset 2px 0 0 #f0c07a;"><div class="cs-gutter">9</div><div style="white-space: pre-wrap;"><span style="color: #f0c07a;">09:41 </span><span style="color: #8fbaff;">SecOps:</span> ignore my 09:31 number, that was the click count not the submit count</div></div>
+        <div class="cs-line" style="background: #1f2328; box-shadow: inset 2px 0 0 #f0c07a;"><div class="cs-gutter">10</div><div style="white-space: pre-wrap;"><span style="color: #f0c07a;">09:41 </span><span style="color: #8fbaff;">Devi:</span> coffee run, anyone</div></div>
+        <div class="cs-line"><div class="cs-gutter">11</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">09:47 </span><span style="color: #8fbaff;">SecOps:</span> revising up - 40 accounts clicked the link. submit count still unknown</div></div>
+        <div class="cs-line" style="background: #221f1a; box-shadow: inset 2px 0 0 #f0c07a;"><div class="cs-gutter">12</div><div style="white-space: pre-wrap;"><span style="color: #f0c07a; font-style: italic;">before lunch </span><span style="color: #8fbaff;">SecOps:</span> forced password reset on all 40, MFA re-enrolment queued</div></div>
+        <div class="cs-line"><div class="cs-gutter">13</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">10:15 </span><span style="color: #8fbaff;">IT Ops:</span> this only worked because Nadia's team still had MFA exemptions from the March migration</div></div>
+        <div class="cs-line"><div class="cs-gutter">14</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">10:30 </span><span style="color: #8fbaff;">SecOps:</span> confirmed 31 accounts submitted credentials. all 31 reset. no evidence of mailbox access yet</div></div>
+        <div class="cs-line"><div class="cs-gutter">15</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">10:33 </span><span style="color: #8fbaff;">Legal:</span> has any personal data left the building</div></div>
+        <div class="cs-line"><div class="cs-gutter">16</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">10:52 </span><span style="color: #8fbaff;">SecOps:</span> no evidence of exfiltration at this point. still reviewing sign-in logs</div></div>
+        <div class="cs-line"><div class="cs-gutter">17</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">11:05 </span><span style="color: #8fbaff;">Comms:</span> looks like the same group that hit the other agency last month</div></div>
+        <div class="cs-line"><div class="cs-gutter">18</div><div style="white-space: pre-wrap;"><span style="color: #9aa3ad;">11:20 </span><span style="color: #8fbaff;">SecOps:</span> no basis for that, we have not attributed anything</div></div>
+      </div>
+    </div>
+
+    <div style="flex-grow: 1; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0;">
+
+      <div class="cs-panel">
+        <div class="cs-head" style="margin-bottom: 14px;">parse — server side, before the model runs</div>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+          <div>
+            <div class="cs-mono" style="font-size: 22px; font-weight: 500; line-height: 1;">18</div>
+            <div class="cs-mono" style="font-size: 10.5px; color: #9aa3ad; margin-top: 5px;">events extracted</div>
+          </div>
+          <div>
+            <div class="cs-mono" style="font-size: 22px; font-weight: 500; line-height: 1; color: #6ddba0;">1 round</div>
+            <div class="cs-mono" style="font-size: 10.5px; color: #9aa3ad; margin-top: 5px;">fast path — parse looks good</div>
+          </div>
+          <div>
+            <div class="cs-mono" style="font-size: 22px; font-weight: 500; line-height: 1;">0.4 ms</div>
+            <div class="cs-mono" style="font-size: 10.5px; color: #9aa3ad; margin-top: 5px;">sorted, ordered, checked</div>
+          </div>
+        </div>
+        <p style="font-size: 12.5px; color: #9aa3ad; margin: 14px 0 0; line-height: 1.55;">The thread is already in order. The model is handed the events and only one tool — it has nothing left to do but judge.</p>
+      </div>
+
+      <div class="cs-panel">
+        <div class="cs-head" style="margin-bottom: 12px;">notes — 3 · these will be surfaced, not resolved</div>
+        <div style="display: flex; flex-direction: column; gap: 11px;">
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span class="cs-mono" style="font-size: 10.5px; background: #33260f; color: #f0c07a; border-radius: 4px; padding: 2px 7px; flex-shrink: 0;">3 · 4</span>
+            <span style="font-size: 12.5px; line-height: 1.5;">Both claim <span class="cs-mono">09:15</span>. The thread does not say which came first.</span>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span class="cs-mono" style="font-size: 10.5px; background: #33260f; color: #f0c07a; border-radius: 4px; padding: 2px 7px; flex-shrink: 0;">9 · 10</span>
+            <span style="font-size: 12.5px; line-height: 1.5;">Both claim <span class="cs-mono">09:41</span>. Same again.</span>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <span class="cs-mono" style="font-size: 10.5px; background: #33260f; color: #f0c07a; border-radius: 4px; padding: 2px 7px; flex-shrink: 0;">12</span>
+            <span style="font-size: 12.5px; line-height: 1.5;">No readable timestamp — <span style="font-style: italic;">"before lunch"</span>. Kept in thread order rather than dropped.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-panel" style="background: transparent; border-color: transparent; padding: 0;">
+        <div style="background: #6ea8ff; color: #10151a; border-radius: 8px; padding: 13px; text-align: center; font-size: 14px; font-weight: 600;">Draft comms</div>
+        <div class="cs-mono" style="font-size: 10.5px; color: #545c65; margin-top: 10px; text-align: center;">deepseek-v4-flash · reasoning: minimal · ~16 s</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="height: 28px; flex-shrink: 0; background: #1c2024; border-top: 1px solid #2c3238; display: flex; align-items: center; justify-content: space-between; padding: 0 14px;">
+    <span class="cs-mono" style="font-size: 10.5px; color: #9aa3ad;">ready</span>
+    <span class="cs-mono" style="font-size: 10.5px; color: #545c65;">nothing stored · third-party endpoint · never paste a real thread</span>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

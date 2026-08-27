@@ -86,15 +86,33 @@ npm test                          # node:test over the pure logic in src/tools.j
 node --test test/events.test.js   # one file
 ```
 
-`fixtures/` holds two deliberately messy threads, each planted with a specific trap —
-out-of-order messages, contradicting timestamps, an unreadable time, a guess at root
-cause, a named colleague, a joke. They are the demo input and the eval set. Run each
-through the UI and check:
+## The eval
 
-- the guessed root cause does **not** appear in `holding`
-- no individual is named in **either** statement
-- the joke is not a timeline row
-- messages come back in chronological order
-- the timestamp clash is surfaced, not silently resolved
+`fixtures/` holds four deliberately messy threads, each planted with specific traps —
+out-of-order messages, contradicting timestamps, an unreadable time, a retracted
+figure, a guess at root cause, a named colleague, a joke, an unrelated incident.
+`fixtures/README.md` has the trap-by-trap table. They are both the demo input and the
+eval set, and they are also what the example buttons in the UI load, so the demo and
+the eval can never drift apart.
+
+```sh
+npm run eval                 # all four fixtures through the real loop
+npm run eval -- phishing     # one of them
+```
+
+`eval/traps.js` is the trap table as assertions: every claim in `fixtures/README.md`
+that can be checked without a human, written as a pure function over the drafted
+artefacts. `eval/run.js` drafts each fixture for real and reports which traps held,
+with latency and token counts beside them. It exits non-zero on any failure, so a
+prompt or model change that got dumber fails loudly instead of surviving three
+commits.
+
+Judgement is the product, so **re-run this after any change to the prompt, the model,
+or `reasoning_effort`.** A faster setting that breaks a trap is not a faster setting.
+
+The harness prints what it *cannot* check at the end of every run. Regexes catch the
+phrasings they were written for; they do not catch a fluent rewording that means the
+same thing. Treat a green run as "no known trap regressed", never as "the judgement
+was good".
 
 **Do not paste real incident threads into a third-party model endpoint.**

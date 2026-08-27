@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #35528d; } a:hover { color: #263d6b; }
+    .lg-eyebrow { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em; color: #6f6659; }
+    .lg-mono { font-family: ui-monospace, Menlo, monospace; }
+    .tl-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 96px 64px; align-items: baseline; gap: 16px; padding: 9px 0 9px 14px; border-bottom: 1px solid #ece5d8; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 1180px; overflow: hidden; background: #f7f4ee; color: #23201b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-direction: column;">
+
+  <div style="height: 64px; flex-shrink: 0; border-bottom: 1px solid #e2dbcd; display: flex; align-items: center; justify-content: space-between; padding: 0 40px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-family: Newsreader, Georgia, serif; font-size: 22px; font-weight: 500; letter-spacing: -0.01em;">Incident Comms</span>
+      <span class="lg-eyebrow" style="color: #a89c88;">the record</span>
+    </div>
+    <span class="lg-eyebrow">27 Aug 2026 · phishing · 8 events from 18 messages</span>
+  </div>
+
+  <div style="flex-grow: 1; padding: 30px 40px 0;">
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 36px;">
+      <div>
+        <div class="lg-eyebrow">Holding statement · external · the one that leaves the building</div>
+        <div style="background: #fffdf9; border: 1px solid #e2dbcd; border-radius: 3px; padding: 26px 30px; margin-top: 10px;">
+          <p style="font-family: Newsreader, Georgia, serif; font-size: 19px; line-height: 1.6; margin: 0; text-wrap: pretty;">We are responding to a phishing email sent to some of our staff, purporting to come from IT Support. The link led to a credential-harvesting page on a look-alike domain. Affected accounts have been reset and sign-in logs are under review. We have seen no evidence of data leaving our systems; that review is not yet complete. A further update will follow by 14:00.</p>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 20px 0 0; padding: 14px 0 0; border-top: 1px solid #ece5d8;">
+            <span class="lg-mono" style="font-size: 11.5px; color: #6f6659;">62 words · limit 120 · no cause, no names, no assurance</span>
+            <span style="border: 1px solid #e2dbcd; border-radius: 3px; padding: 4px 11px; font-size: 12px;">Copy</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="lg-eyebrow" style="color: #8a5a12;">Kept out of this statement</div>
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 13px;">
+          <div style="padding-left: 12px; border-left: 2px solid #e0cba4;">
+            <div style="font-size: 13px; line-height: 1.5;">That this is the same group that hit another agency.</div>
+            <div class="lg-mono" style="font-size: 11px; color: #8a5a12; margin-top: 3px;">msg 17 · rebutted at msg 18</div>
+          </div>
+          <div style="padding-left: 12px; border-left: 2px solid #e0cba4;">
+            <div style="font-size: 13px; line-height: 1.5;">That MFA exemptions were the reason it worked.</div>
+            <div class="lg-mono" style="font-size: 11px; color: #8a5a12; margin-top: 3px;">msg 13 · unconfirmed, and it assigns blame</div>
+          </div>
+          <div style="padding-left: 12px; border-left: 2px solid #e0cba4;">
+            <div style="font-size: 13px; line-height: 1.5;">The name of anyone involved, and any detail that identifies them.</div>
+            <div class="lg-mono" style="font-size: 11px; color: #8a5a12; margin-top: 3px;">msg 6 · msg 13</div>
+          </div>
+          <div style="padding-left: 12px; border-left: 2px solid #ece5d8;">
+            <div style="font-size: 13px; line-height: 1.5; color: #6f6659;">The withdrawn figure of 12, and ten messages of side chatter.</div>
+            <div class="lg-mono" style="font-size: 11px; color: #a89c88; margin-top: 3px;">msg 7 retracted at msg 9</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 36px; margin-top: 26px;">
+      <div>
+        <div class="lg-eyebrow">Internal update · for colleagues</div>
+        <div style="background: #fffdf9; border: 1px solid #e2dbcd; border-radius: 3px; padding: 20px 24px; margin-top: 10px;">
+          <p style="font-size: 14px; line-height: 1.62; margin: 0 0 12px; text-wrap: pretty;"><span class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: #2f6b46; margin-right: 6px;">Confirmed</span>Phishing from a look-alike domain; 31 accounts submitted credentials and all 31 are reset. Forced reset on all 40 accounts that clicked, MFA re-enrolment queued. No evidence of mailbox access; sign-in log review continues.</p>
+          <p style="font-size: 14px; line-height: 1.62; margin: 0; text-wrap: pretty;"><span class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: #8a5a12; margin-right: 6px;">Unconfirmed</span>The 09:31 figure of 12 was withdrawn — it counted clicks, not submissions. A suggestion about attribution was rebutted in-thread; nothing has been attributed. Do not repeat it outside this channel.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="lg-eyebrow">Still open · four</div>
+        <div style="margin-top: 10px;">
+          <div style="font-size: 12.5px; line-height: 1.5; padding: 9px 0; border-top: 1px solid #e2dbcd;">Has any personal data left the environment? The log review is not complete.</div>
+          <div style="font-size: 12.5px; line-height: 1.5; padding: 9px 0; border-top: 1px solid #ece5d8;">Reconcile 40 clicked against 31 submitted before the next update.</div>
+          <div style="font-size: 12.5px; line-height: 1.5; padding: 9px 0; border-top: 1px solid #ece5d8;">Who replies to the outlet, and by when?</div>
+          <div style="font-size: 12.5px; line-height: 1.5; padding: 9px 0; border-top: 1px solid #ece5d8;">Confirm whether any of the 31 accounts had mailbox access.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 26px;">
+      <div class="lg-eyebrow">Timeline · 8 events from 18 messages · every row cites its source</div>
+      <div style="margin-top: 10px; border-top: 1px solid #d8cfbc;">
+        <div class="tl-row" style="border-left: 3px solid #2f6b46;">
+          <div class="lg-mono" style="font-size: 12px; color: #6f6659;">09:08</div>
+          <div style="font-size: 13.5px; line-height: 1.45;">First reports of an email asking staff to re-verify their password</div>
+          <div class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #2f6b46;">Confirmed</div>
+          <div class="lg-mono" style="font-size: 11px; color: #a89c88; text-align: right;">msg 1</div>
+        </div>
+        <div class="tl-row" style="border-left: 3px solid #2f6b46;">
+          <div class="lg-mono" style="font-size: 12px; color: #6f6659;">09:20</div>
+          <div style="font-size: 13.5px; line-height: 1.45;">Confirmed as phishing; the link resolves to a credential-harvesting page on a look-alike domain</div>
+          <div class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #2f6b46;">Confirmed</div>
+          <div class="lg-mono" style="font-size: 11px; color: #a89c88; text-align: right;">msg 5</div>
+        </div>
+        <div class="tl-row" style="border-left: 3px solid #2f6b46;">
+          <div class="lg-mono" style="font-size: 12px; color: #6f6659;">09:24</div>
+          <div style="font-size: 13.5px; line-height: 1.45;">A member of Finance staff reports entering a password before realising</div>
+          <div class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #2f6b46;">Confirmed</div>
+          <div class="lg-mono" style="font-size: 11px; color: #a89c88; text-align: right;">msg 6</div>
+        </div>
+        <div class="tl-row" style="border-left: 3px solid #8a5a12; background: #fbf6ec;">
+          <div class="lg-mono" style="font-size: 12px; color: #6f6659;">09:31</div>
+          <div style="font-size: 13.5px; line-height: 1.45;">Initial estimate of about 12 submitted accounts — withdrawn at 09:41 as a click count</div>
+          <div class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #8a5a12;">Alleged</div>
+          <div class="lg-mono" style="font-size: 11px; color: #a89c88; text-align: right;">msg 7</div>
+        </div>
+        <div class="tl-row" style="border-left: 3px solid #2f6b46;">
+          <div class="lg-mono" style="font-size: 12px; color: #6f6659;">09:38</div>
+          <div style="font-size: 13.5px; line-height: 1.45;">A local outlet asks whether the organisation has been breached</div>
+          <div class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #2f6b46;">Confirmed</div>
+          <div class="lg-mono" style="font-size: 11px; color: #a89c88; text-align: right;">msg 8</div>
+        </div>
+        <div class="tl-row" style="border-left: 3px solid #2f6b46;">
+          <div class="lg-mono" style="font-size: 12px; color: #6f6659;">09:47</div>
+          <div style="font-size: 13.5px; line-height: 1.45;">Revised upward: 40 accounts clicked the link; submit count still unknown</div>
+          <div class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #2f6b46;">Confirmed</div>
+          <div class="lg-mono" style="font-size: 11px; color: #a89c88; text-align: right;">msg 11</div>
+        </div>
+        <div class="tl-row" style="border-left: 3px solid #2f6b46;">
+          <div class="lg-mono" style="font-size: 12px; color: #8a5a12; font-style: italic;">before lunch</div>
+          <div style="font-size: 13.5px; line-height: 1.45;">Forced password reset on all 40 accounts; MFA re-enrolment queued</div>
+          <div class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #2f6b46;">Confirmed</div>
+          <div class="lg-mono" style="font-size: 11px; color: #a89c88; text-align: right;">msg 12</div>
+        </div>
+        <div class="tl-row" style="border-left: 3px solid #2f6b46;">
+          <div class="lg-mono" style="font-size: 12px; color: #6f6659;">10:30</div>
+          <div style="font-size: 13.5px; line-height: 1.45;">31 accounts confirmed to have submitted credentials; all reset, no mailbox access seen</div>
+          <div class="lg-mono" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; color: #2f6b46;">Confirmed</div>
+          <div class="lg-mono" style="font-size: 11px; color: #a89c88; text-align: right;">msg 14</div>
+        </div>
+      </div>
+      <p style="font-size: 11.5px; color: #6f6659; margin: 12px 0 0; line-height: 1.55; max-width: 90ch;">The time on message 12 could not be read, so it keeps its place in the thread rather than being dropped. Messages 3 and 4 both claim 09:15, and 9 and 10 both claim 09:41 — the thread does not say which came first, and neither does this record.</p>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

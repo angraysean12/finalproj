@@ -2,3 +2,10 @@ node_modules/
 .wrangler/
 .env
 .DS_Store
+
+# Design canvases and the landing page are generated: the .dc.html artboards,
+# canvas.json and landing.tpl.html are the sources. The seeded output embeds a
+# ~2MB editor payload and base64 screenshots, so it is rebuilt, not committed.
+design/incident-comms-directions.html
+design/incident-comms-landing.html
+design/*.b64

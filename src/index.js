@@ -1,7 +1,41 @@
 import ui from "./ui.html";
 import { runDraft } from "./loop.js";
+import portalOutage from "../fixtures/portal-outage.txt";
+import misSentLetters from "../fixtures/mis-sent-letters.txt";
+import phishingCredentials from "../fixtures/phishing-credentials.txt";
+import overnightPayments from "../fixtures/overnight-payments.txt";
 
 const MAX_THREAD_CHARS = 20_000;
+
+// The fixtures are the eval set; serving them is what stops the demo examples
+// drifting from the threads the traps are actually checked against. `note` is
+// the trap the thread is there to demonstrate, not a summary of the incident.
+const EXAMPLES = [
+  {
+    id: "portal-outage",
+    label: "Portal outage",
+    note: "Out of order, one unreadable time",
+    thread: portalOutage,
+  },
+  {
+    id: "mis-sent-letters",
+    label: "Mis-sent letters",
+    note: "A named colleague, a count nobody has",
+    thread: misSentLetters,
+  },
+  {
+    id: "phishing-credentials",
+    label: "Phishing",
+    note: "A retracted figure, a reporter waiting",
+    thread: phishingCredentials,
+  },
+  {
+    id: "overnight-payments",
+    label: "Overnight payments",
+    note: "59 lines, a recovery that did not hold",
+    thread: overnightPayments,
+  },
+];
 
 export default {
   async fetch(request, env) {
@@ -11,6 +45,10 @@ export default {
       return new Response(ui, {
         headers: { "content-type": "text/html; charset=utf-8" },
       });
+    }
+
+    if (request.method === "GET" && pathname === "/examples") {
+      return json(EXAMPLES);
     }
 
     if (request.method === "POST" && pathname === "/draft") {

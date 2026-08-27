@@ -25,7 +25,12 @@ npm run deploy                    # wrangler deploy
 `src/tools.js`. `src/prompt.js` builds the system prompt.
 
 `wrangler.toml`'s `[[rules]] type = "Text"` block is **load-bearing** — it is what
-makes `import ui from "./ui.html"` work. Do not remove it.
+makes `import ui from "./ui.html"` and the `fixtures/*.txt` imports work. Do not
+remove it, and do not narrow its globs.
+
+`GET /examples` serves the fixture threads themselves as the UI's clickable examples.
+They are imported from `fixtures/`, not copied into `src/ui.html` — a second copy of
+the eval set would drift from the one the traps are checked against.
 
 ## The rules that are load-bearing
 

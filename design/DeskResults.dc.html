@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    a { color: #1f6feb; } a:hover { color: #1a5fd0; }
+    .dk-th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; padding: 0 10px 8px 0; }
+    .dk-td { padding: 9px 10px 9px 0; border-top: 1px solid #e3e6ea; font-size: 13.5px; line-height: 1.45; vertical-align: top; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 1180px; overflow: hidden; background: #f6f7f9; color: #16191d; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-direction: column;">
+
+  <div style="height: 56px; flex-shrink: 0; background: #ffffff; border-bottom: 1px solid #e3e6ea; display: flex; align-items: center; justify-content: space-between; padding: 0 32px;">
+    <div style="display: flex; align-items: center; gap: 9px;">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#1f6feb" stroke-width="1.5" stroke-linecap="round">
+        <rect x="1.75" y="2.25" width="14.5" height="11.5" rx="2"></rect>
+        <path d="M5 6.25h8M5 9.25h5.5"></path>
+        <path d="M6.5 13.75 9 16.25l2.5-2.5"></path>
+      </svg>
+      <span style="font-size: 14px; font-weight: 600; letter-spacing: -0.005em;">Incident Comms</span>
+    </div>
+    <span style="font-size: 12.5px; color: #6b7280;">Duty desk</span>
+  </div>
+
+  <div style="flex-grow: 1; padding: 32px 32px 0;">
+    <div style="max-width: 1088px; margin: 0 auto;">
+
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin: 0 0 20px;">
+        <div>
+          <h1 style="font-size: 17px; font-weight: 600; letter-spacing: -0.008em; margin: 0 0 4px;">Phishing — credential harvesting</h1>
+          <div style="font-size: 12.5px; color: #6b7280;">Drafted in 16s · 8 events from 18 messages · parsed server-side, one round</div>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e3e6ea; border-radius: 7px; padding: 6px 12px; font-size: 13px; flex-shrink: 0;">Start over</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0 0 16px;">
+
+        <div style="background: #ffffff; border: 1px solid #e3e6ea; border-radius: 10px; padding: 16px 18px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0 0 10px;">
+            <h2 style="font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #6b7280; margin: 0;">Holding statement · external</h2>
+            <div style="border: 1px solid #e3e6ea; border-radius: 6px; padding: 3px 8px; font-size: 11.5px; color: #16191d;">Copy</div>
+          </div>
+          <p style="font-size: 14px; line-height: 1.62; margin: 0; text-wrap: pretty;">We are responding to a phishing email sent to some of our staff, purporting to come from IT Support. The link led to a credential-harvesting page on a look-alike domain. Affected accounts have been reset and sign-in logs are under review. We have seen no evidence of data leaving our systems; that review is not yet complete. A further update will follow by 14:00.</p>
+          <div style="font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; color: #6b7280; margin: 12px 0 0;">62 words · limit 120</div>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #e3e6ea; border-radius: 10px; padding: 16px 18px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0 0 10px;">
+            <h2 style="font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #6b7280; margin: 0;">Internal update</h2>
+            <div style="border: 1px solid #e3e6ea; border-radius: 6px; padding: 3px 8px; font-size: 11.5px; color: #16191d;">Copy</div>
+          </div>
+          <p style="font-size: 14px; line-height: 1.62; margin: 0 0 10px; text-wrap: pretty;"><span style="font-weight: 600;">Confirmed.</span> Phishing from a look-alike domain; 31 accounts submitted credentials and all 31 are reset. Forced reset on all 40 accounts that clicked, MFA re-enrolment queued. No evidence of mailbox access; sign-in log review continues.</p>
+          <p style="font-size: 14px; line-height: 1.62; margin: 0; text-wrap: pretty;"><span style="font-weight: 600; color: #9a5b00;">Unconfirmed.</span> The 09:31 figure of 12 was withdrawn — it counted clicks, not submissions. A suggestion that this is the same group that hit another agency was rebutted in-thread; nothing has been attributed. Do not repeat it outside this channel.</p>
+          <div style="font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; color: #6b7280; margin: 12px 0 0;">71 words · limit 150</div>
+        </div>
+
+        <div style="grid-column: 1 / -1; background: #ffffff; border: 1px solid #e3e6ea; border-radius: 10px; padding: 16px 18px;">
+          <h2 style="font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #6b7280; margin: 0 0 8px;">Timeline</h2>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th class="dk-th" style="width: 96px;">Time</th>
+                <th class="dk-th">Event</th>
+                <th class="dk-th" style="width: 104px;">Status</th>
+                <th class="dk-th" style="width: 72px;">Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #6b7280; white-space: nowrap;">09:08</td>
+                <td class="dk-td">First reports of an email asking staff to re-verify their password</td>
+                <td class="dk-td"><span style="display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 11.5px; font-weight: 600; color: #0a7c42; background: #e6f4ec;">Confirmed</span></td>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6b7280;">msg 1</td>
+              </tr>
+              <tr>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #6b7280; white-space: nowrap;">09:20</td>
+                <td class="dk-td">Confirmed as phishing; the link resolves to a credential-harvesting page on a look-alike domain</td>
+                <td class="dk-td"><span style="display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 11.5px; font-weight: 600; color: #0a7c42; background: #e6f4ec;">Confirmed</span></td>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6b7280;">msg 5</td>
+              </tr>
+              <tr>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #6b7280; white-space: nowrap;">09:24</td>
+                <td class="dk-td">A member of Finance staff reports entering a password before realising</td>
+                <td class="dk-td"><span style="display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 11.5px; font-weight: 600; color: #0a7c42; background: #e6f4ec;">Confirmed</span></td>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6b7280;">msg 6</td>
+              </tr>
+              <tr>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #6b7280; white-space: nowrap;">09:31</td>
+                <td class="dk-td">Initial estimate of about 12 submitted accounts — withdrawn at 09:41 as a click count</td>
+                <td class="dk-td"><span style="display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 11.5px; font-weight: 600; color: #9a5b00; background: #fdf1de;">Alleged</span></td>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6b7280;">msg 7</td>
+              </tr>
+              <tr>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #6b7280; white-space: nowrap;">09:38</td>
+                <td class="dk-td">A local outlet asks whether the organisation has been breached</td>
+                <td class="dk-td"><span style="display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 11.5px; font-weight: 600; color: #0a7c42; background: #e6f4ec;">Confirmed</span></td>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6b7280;">msg 8</td>
+              </tr>
+              <tr>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #6b7280; white-space: nowrap;">09:47</td>
+                <td class="dk-td">Revised upward: 40 accounts clicked the link; submit count still unknown</td>
+                <td class="dk-td"><span style="display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 11.5px; font-weight: 600; color: #0a7c42; background: #e6f4ec;">Confirmed</span></td>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6b7280;">msg 11</td>
+              </tr>
+              <tr>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #6b7280; white-space: nowrap;">before lunch <span style="color: #9a5b00;">†</span></td>
+                <td class="dk-td">Forced password reset on all 40 accounts; MFA re-enrolment queued</td>
+                <td class="dk-td"><span style="display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 11.5px; font-weight: 600; color: #0a7c42; background: #e6f4ec;">Confirmed</span></td>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6b7280;">msg 12</td>
+              </tr>
+              <tr>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: #6b7280; white-space: nowrap;">10:30</td>
+                <td class="dk-td">31 accounts confirmed to have submitted credentials; all reset, no mailbox access seen</td>
+                <td class="dk-td"><span style="display: inline-block; padding: 1px 7px; border-radius: 99px; font-size: 11.5px; font-weight: 600; color: #0a7c42; background: #e6f4ec;">Confirmed</span></td>
+                <td class="dk-td" style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #6b7280;">msg 14</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size: 12px; color: #6b7280; margin: 12px 0 0; line-height: 1.5;">† Timestamp could not be read; the event keeps its place in the thread. Two messages claim 09:15 and two claim 09:41 — the thread does not say which came first.</p>
+        </div>
+
+        <div style="grid-column: 1 / -1; background: #ffffff; border: 1px solid #e3e6ea; border-radius: 10px; padding: 16px 18px;">
+          <h2 style="font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #6b7280; margin: 0 0 10px;">Still open</h2>
+          <ul style="margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.5;">
+            <li style="margin-bottom: 5px;">Has any personal data left the environment? The sign-in log review is not complete.</li>
+            <li style="margin-bottom: 5px;">Reconcile the 40 clicked against the 31 submitted before the next update goes out.</li>
+            <li style="margin-bottom: 5px;">Who replies to the outlet, and by when?</li>
+            <li>Confirm whether any of the 31 reset accounts had mailbox access.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

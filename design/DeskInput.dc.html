@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    a { color: #1f6feb; } a:hover { color: #1a5fd0; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 1180px; overflow: hidden; background: #f6f7f9; color: #16191d; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-direction: column;">
+
+  <div style="height: 56px; flex-shrink: 0; background: #ffffff; border-bottom: 1px solid #e3e6ea; display: flex; align-items: center; justify-content: space-between; padding: 0 32px;">
+    <div style="display: flex; align-items: center; gap: 9px;">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#1f6feb" stroke-width="1.5" stroke-linecap="round">
+        <rect x="1.75" y="2.25" width="14.5" height="11.5" rx="2"></rect>
+        <path d="M5 6.25h8M5 9.25h5.5"></path>
+        <path d="M6.5 13.75 9 16.25l2.5-2.5"></path>
+      </svg>
+      <span style="font-size: 14px; font-weight: 600; letter-spacing: -0.005em;">Incident Comms</span>
+    </div>
+    <span style="font-size: 12.5px; color: #6b7280;">Duty desk</span>
+  </div>
+
+  <div style="flex-grow: 1; padding: 40px 32px 0;">
+    <div style="max-width: 1088px; margin: 0 auto;">
+
+      <h1 style="font-size: 20px; font-weight: 600; letter-spacing: -0.012em; margin: 0 0 6px;">Turn the channel into something you can send.</h1>
+      <p style="font-size: 15px; color: #6b7280; margin: 0 0 28px; max-width: 60ch; text-wrap: pretty;">Paste the incident thread. You get an external holding statement, an internal update, and a timeline where every row cites the message it came from.</p>
+
+      <div style="font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #6b7280; margin: 0 0 10px;">Start from an example</div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 20px;">
+        <div style="background: #ffffff; border: 1px solid #e3e6ea; border-radius: 7px; padding: 7px 11px; display: flex; flex-direction: column; gap: 2px; line-height: 1.3;">
+          <span style="font-size: 13px; font-weight: 500;">Portal outage</span>
+          <span style="font-size: 11.5px; color: #6b7280;">Out of order, one unreadable time</span>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e3e6ea; border-radius: 7px; padding: 7px 11px; display: flex; flex-direction: column; gap: 2px; line-height: 1.3;">
+          <span style="font-size: 13px; font-weight: 500;">Mis-sent letters</span>
+          <span style="font-size: 11.5px; color: #6b7280;">A named colleague, a count nobody has</span>
+        </div>
+        <div style="background: #f2f7fe; border: 1px solid #1f6feb; border-radius: 7px; padding: 7px 11px; display: flex; flex-direction: column; gap: 2px; line-height: 1.3;">
+          <span style="font-size: 13px; font-weight: 500;">Phishing</span>
+          <span style="font-size: 11.5px; color: #6b7280;">A retracted figure, a reporter waiting</span>
+        </div>
+        <div style="background: #ffffff; border: 1px solid #e3e6ea; border-radius: 7px; padding: 7px 11px; display: flex; flex-direction: column; gap: 2px; line-height: 1.3;">
+          <span style="font-size: 13px; font-weight: 500;">Overnight payments</span>
+          <span style="font-size: 11.5px; color: #6b7280;">59 lines, a recovery that did not hold</span>
+        </div>
+      </div>
+
+      <div style="position: relative; background: #ffffff; border: 1px solid #e3e6ea; border-radius: 8px; padding: 14px 16px; height: 448px; overflow: hidden; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.62; color: #16191d;">
+        <div style="white-space: pre;">0908hrs Helpdesk: three staff have called about an email from "IT Support" asking them to re-verify their password</div>
+        <div style="white-space: pre;">9.12am Helpdesk: sorry, five staff now</div>
+        <div style="white-space: pre;">09:15 SecOps: can someone forward me the full headers</div>
+        <div style="white-space: pre;">09:15 Devi: forwarded. sender domain is not ours</div>
+        <div style="white-space: pre;">09:20 SecOps: confirmed phishing. the link goes to a credential harvesting page on a look-alike domain</div>
+        <div style="white-space: pre;">09:24 Helpdesk: Nadia in Finance says she entered her password before she realised</div>
+        <div style="white-space: pre;">09:31 SecOps: we think about 12 accounts may have submitted credentials</div>
+        <div style="white-space: pre;">09:38 Comms: a reporter from a local outlet has emailed asking whether we have been breached</div>
+        <div style="white-space: pre;">09:41 SecOps: ignore my 09:31 number, that was the click count not the submit count</div>
+        <div style="white-space: pre;">09:41 Devi: coffee run, anyone</div>
+        <div style="white-space: pre;">09:47 SecOps: revising up - 40 accounts clicked the link. submit count still unknown</div>
+        <div style="white-space: pre;">before lunch SecOps: forced password reset on all 40, MFA re-enrolment queued</div>
+        <div style="white-space: pre;">10:15 IT Ops: this only worked because Nadia's team still had MFA exemptions from the March migration</div>
+        <div style="white-space: pre;">10:30 SecOps: confirmed 31 accounts submitted credentials. all 31 reset. no evidence of mailbox access yet</div>
+        <div style="white-space: pre;">10:33 Legal: has any personal data left the building</div>
+        <div style="white-space: pre;">10:52 SecOps: no evidence of exfiltration at this point. still reviewing sign-in logs</div>
+        <div style="white-space: pre;">11:05 Comms: looks like the same group that hit the other agency last month</div>
+        <div style="white-space: pre;">11:20 SecOps: no basis for that, we have not attributed anything</div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; padding: 16px 0 0;">
+        <div style="background: #1f6feb; color: #ffffff; border-radius: 7px; padding: 9px 16px; font-size: 14px; font-weight: 600;">Draft comms</div>
+        <span style="font-size: 13px; color: #6b7280;">18 messages · 17 timestamps read · 1 unreadable</span>
+      </div>
+
+      <p style="font-size: 12.5px; color: #6b7280; margin: 12px 0 0;">Threads go to a third-party model endpoint and are not stored. Never paste a real incident thread.</p>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

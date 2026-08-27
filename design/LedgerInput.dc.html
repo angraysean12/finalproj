@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #35528d; } a:hover { color: #263d6b; }
+    .lg-row { display: grid; grid-template-columns: 40px 84px minmax(0, 1fr); align-items: baseline; padding: 8px 20px 8px 10px; border-bottom: 1px solid #f0ebe0; }
+    .lg-num { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #a89c88; text-align: right; padding-right: 14px; }
+    .lg-time { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; color: #6f6659; }
+    .lg-eyebrow { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em; color: #6f6659; }
+  </style>
+</helmet>
+<div style="width: 1440px; height: 1180px; overflow: hidden; background: #f7f4ee; color: #23201b; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; font-size: 15px; line-height: 1.55; display: flex; flex-direction: column;">
+
+  <div style="height: 64px; flex-shrink: 0; border-bottom: 1px solid #e2dbcd; display: flex; align-items: center; justify-content: space-between; padding: 0 40px;">
+    <div style="display: flex; align-items: baseline; gap: 12px;">
+      <span style="font-family: Newsreader, Georgia, serif; font-size: 22px; font-weight: 500; letter-spacing: -0.01em;">Incident Comms</span>
+      <span style="font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em; color: #a89c88;">the record</span>
+    </div>
+    <span style="font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em; color: #6f6659;">27 Aug 2026 · phishing · unfiled</span>
+  </div>
+
+  <div style="flex-grow: 1; padding: 36px 40px 0; display: grid; grid-template-columns: minmax(0, 1fr) 404px; gap: 40px;">
+
+    <div>
+      <div class="lg-eyebrow">The thread, as filed</div>
+      <h1 style="font-family: Newsreader, Georgia, serif; font-size: 27px; font-weight: 400; line-height: 1.25; letter-spacing: -0.012em; margin: 8px 0 20px; max-width: 30ch; text-wrap: pretty;">Eighteen messages. Ten of them are not events.</h1>
+
+      <div style="background: #fffdf9; border: 1px solid #e2dbcd; border-radius: 3px; padding: 6px 0;">
+        <div class="lg-row">
+          <div class="lg-num">1</div>
+          <div class="lg-time">0908hrs</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">Helpdesk</span> three staff have called about an email from “IT Support” asking them to re-verify their password</div>
+        </div>
+        <div class="lg-row">
+          <div class="lg-num">2</div>
+          <div class="lg-time">9.12am</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">Helpdesk</span> sorry, five staff now</div>
+        </div>
+        <div class="lg-row" style="background: #faf3e6;">
+          <div class="lg-num">3</div>
+          <div class="lg-time">09:15</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">SecOps</span> can someone forward me the full headers</div>
+        </div>
+        <div class="lg-row" style="background: #faf3e6;">
+          <div class="lg-num">4</div>
+          <div class="lg-time">09:15</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">Devi</span> forwarded. sender domain is not ours</div>
+        </div>
+        <div class="lg-row">
+          <div class="lg-num">5</div>
+          <div class="lg-time">09:20</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">SecOps</span> confirmed phishing. the link goes to a credential harvesting page on a look-alike domain</div>
+        </div>
+        <div class="lg-row">
+          <div class="lg-num">6</div>
+          <div class="lg-time">09:24</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">Helpdesk</span> Nadia in Finance says she entered her password before she realised</div>
+        </div>
+        <div class="lg-row">
+          <div class="lg-num">7</div>
+          <div class="lg-time">09:31</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">SecOps</span> we think about 12 accounts may have submitted credentials</div>
+        </div>
+        <div class="lg-row">
+          <div class="lg-num">8</div>
+          <div class="lg-time">09:38</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">Comms</span> a reporter from a local outlet has emailed asking whether we have been breached</div>
+        </div>
+        <div class="lg-row" style="background: #faf3e6;">
+          <div class="lg-num">9</div>
+          <div class="lg-time">09:41</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">SecOps</span> ignore my 09:31 number, that was the click count not the submit count</div>
+        </div>
+        <div class="lg-row" style="background: #faf3e6;">
+          <div class="lg-num">10</div>
+          <div class="lg-time">09:41</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">Devi</span> coffee run, anyone</div>
+        </div>
+        <div class="lg-row">
+          <div class="lg-num">11</div>
+          <div class="lg-time">09:47</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">SecOps</span> revising up - 40 accounts clicked the link. submit count still unknown</div>
+        </div>
+        <div class="lg-row" style="background: #f6ecd9;">
+          <div class="lg-num">12</div>
+          <div class="lg-time" style="color: #8a5a12; font-style: italic;">before lunch</div>
+          <div style="font-size: 13.5px; line-height: 1.5;"><span style="font-weight: 600;">SecOps</span> forced password reset on all 40, MFA re-enrolment queued</div>
+        </div>
+        <div class="lg-row" style="border-bottom: none;">
+          <div class="lg-num" style="color: #c4b8a2;">13–18</div>
+          <div class="lg-time" style="color: #a89c88;">10:15 – 11:20</div>
+          <div style="font-size: 12.5px; line-height: 1.5; color: #6f6659; font-style: italic;">six further messages — the MFA remark, the confirmed 31, Legal’s question, the exfiltration answer, an attribution guess and its rebuttal</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="background: #fffdf9; border: 1px solid #e2dbcd; border-radius: 3px; padding: 22px 24px;">
+        <div class="lg-eyebrow">Read before drafting</div>
+        <h2 style="font-family: Newsreader, Georgia, serif; font-size: 21px; font-weight: 400; line-height: 1.3; margin: 8px 0 20px;">What the parse already knows</h2>
+
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 0 0 20px; border-bottom: 1px solid #ece5d8;">
+          <div>
+            <div style="font-family: Newsreader, Georgia, serif; font-size: 26px; font-weight: 500; line-height: 1;">18</div>
+            <div style="font-size: 11.5px; color: #6f6659; margin-top: 4px;">messages</div>
+          </div>
+          <div>
+            <div style="font-family: Newsreader, Georgia, serif; font-size: 26px; font-weight: 500; line-height: 1;">17</div>
+            <div style="font-size: 11.5px; color: #6f6659; margin-top: 4px;">times read</div>
+          </div>
+          <div>
+            <div style="font-family: Newsreader, Georgia, serif; font-size: 26px; font-weight: 500; line-height: 1; color: #8a5a12;">1</div>
+            <div style="font-size: 11.5px; color: #6f6659; margin-top: 4px;">unreadable</div>
+          </div>
+        </div>
+
+        <div style="padding: 18px 0 0; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; gap: 11px; align-items: flex-start;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#8a5a12" stroke-width="1.4" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;">
+              <path d="M2.5 5.5h11M2.5 10.5h11"></path>
+            </svg>
+            <div style="font-size: 13px; line-height: 1.5;">Messages 3 and 4 both claim <span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">09:15</span>; the thread does not say which came first.</div>
+          </div>
+          <div style="display: flex; gap: 11px; align-items: flex-start;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#8a5a12" stroke-width="1.4" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;">
+              <path d="M2.5 5.5h11M2.5 10.5h11"></path>
+            </svg>
+            <div style="font-size: 13px; line-height: 1.5;">Messages 9 and 10 both claim <span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px;">09:41</span>. Same again.</div>
+          </div>
+          <div style="display: flex; gap: 11px; align-items: flex-start;">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#8a5a12" stroke-width="1.4" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;">
+              <path d="M8 2.5 14.5 13.5h-13z"></path>
+              <path d="M8 6.5v3M8 11.6v.2"></path>
+            </svg>
+            <div style="font-size: 13px; line-height: 1.5;">Message 12 has no readable timestamp (<span style="font-style: italic;">“before lunch”</span>). It keeps its place in the thread rather than being dropped.</div>
+          </div>
+        </div>
+
+        <div style="margin: 22px 0 0; padding: 20px 0 0; border-top: 1px solid #ece5d8;">
+          <div style="background: #23201b; color: #f7f4ee; border-radius: 3px; padding: 13px; text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 0.01em;">Draft the record</div>
+          <p style="font-size: 11.5px; color: #6f6659; margin: 12px 0 0; text-align: center; line-height: 1.5;">Sent to a third-party model. Never paste a real incident thread.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

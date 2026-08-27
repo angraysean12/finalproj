@@ -1,0 +1,395 @@
+<title>Incident Comms</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;450;500;600&display=swap">
+<style>
+  /* Dark-first: the product is a console for the 2am shift, and the identity is
+     built on that ground. Light is the mirrored override. */
+  :root {
+    --bg: #14171a; --panel: #1c2024; --raise: #20252b; --line: #2c3238; --hair: #262c32;
+    --ink: #e8eaed; --ink-strong: #f4f6f8; --muted: #9aa3ad; --faint: #4e565f;
+    --accent: #6ea8ff; --accent-soft: #17263a;
+    --confirmed: #6ddba0; --confirmed-bg: #14301f;
+    --alleged: #f0c07a; --alleged-bg: #33260f;
+    --unknown: #9aa3ad; --unknown-bg: #24292e;
+    --shadow: 0 1px 3px rgba(0,0,0,.4);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f6f7f9; --panel: #ffffff; --raise: #ffffff; --line: #e3e6ea; --hair: #eceff2;
+      --ink: #16191d; --ink-strong: #0b0d10; --muted: #6b7280; --faint: #a4abb3;
+      --accent: #1f6feb; --accent-soft: #eaf2fe;
+      --confirmed: #0a7c42; --confirmed-bg: #e6f4ec;
+      --alleged: #9a5b00; --alleged-bg: #fdf1de;
+      --unknown: #6b7280; --unknown-bg: #eef0f2;
+      --shadow: 0 1px 3px rgba(20,23,26,.09);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f6f7f9; --panel: #ffffff; --raise: #ffffff; --line: #e3e6ea; --hair: #eceff2;
+    --ink: #16191d; --ink-strong: #0b0d10; --muted: #6b7280; --faint: #a4abb3;
+    --accent: #1f6feb; --accent-soft: #eaf2fe;
+    --confirmed: #0a7c42; --confirmed-bg: #e6f4ec;
+    --alleged: #9a5b00; --alleged-bg: #fdf1de;
+    --unknown: #6b7280; --unknown-bg: #eef0f2;
+    --shadow: 0 1px 3px rgba(20,23,26,.09);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .m { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; }
+  .wrap { max-width: 60rem; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ---- header ---- */
+  header {
+    border-bottom: 1px solid var(--line); background: var(--panel);
+    position: sticky; top: 0; z-index: 5;
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 56px; flex-wrap: wrap; }
+  .lockup { display: flex; align-items: center; gap: .6rem; }
+  .lockup .word {
+    font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    font-weight: 500; font-size: 1.05rem; letter-spacing: -.02em; color: var(--ink-strong);
+  }
+  .byline { font-size: .8rem; color: var(--muted); }
+
+  /* ---- hero ---- */
+  .hero { padding: 4.5rem 0 3.5rem; border-bottom: 1px solid var(--line); }
+  .kicker {
+    font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted);
+  }
+  h1 {
+    font-size: clamp(1.9rem, 4.4vw, 3rem); line-height: 1.14; letter-spacing: -.028em;
+    font-weight: 600; margin: 1rem 0 1.1rem; text-wrap: balance; color: var(--ink-strong);
+  }
+  .lede { font-size: 1.13rem; color: var(--muted); max-width: 54ch; margin: 0; text-wrap: pretty; }
+  .actions { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 2rem; }
+  .btn {
+    font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: .82rem;
+    border: 1px solid var(--line); border-radius: 7px; padding: .55rem .95rem;
+    color: var(--ink); text-decoration: none; background: var(--panel); transition: border-color .15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+  .btn.primary:hover { color: var(--bg); opacity: .9; }
+  a { color: var(--accent); }
+  a:hover { color: var(--accent); text-decoration-thickness: 2px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+  /* ---- sections ---- */
+  section { padding: 3.2rem 0; border-bottom: 1px solid var(--hair); }
+  .head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1.3rem; flex-wrap: wrap; }
+  h2 { font-size: 1.28rem; font-weight: 600; letter-spacing: -.015em; margin: 0; color: var(--ink-strong); }
+  .cite {
+    font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: .72rem;
+    color: var(--faint); white-space: nowrap;
+  }
+  p { margin: 0 0 1rem; max-width: 66ch; text-wrap: pretty; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 600; color: var(--ink-strong); }
+
+  /* status pills — the product's own taxonomy, applied to this page's claims */
+  .pill {
+    display: inline-block; font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    font-size: .66rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 600;
+    border-radius: 99px; padding: .16rem .5rem; vertical-align: 2px;
+  }
+  .pill.confirmed { color: var(--confirmed); background: var(--confirmed-bg); }
+  .pill.alleged { color: var(--alleged); background: var(--alleged-bg); }
+  .pill.unknown { color: var(--unknown); background: var(--unknown-bg); }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1.2rem 1.35rem; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
+
+  /* metric */
+  .metric { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .metric .fig {
+    font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    font-size: clamp(2.2rem, 6vw, 3.4rem); font-weight: 500; line-height: 1;
+    letter-spacing: -.03em; color: var(--ink-strong); font-variant-numeric: tabular-nums;
+  }
+  .metric .unit { font-size: .95rem; color: var(--muted); max-width: 34ch; }
+
+  /* evidence rows — a status rail per claim, like a timeline row */
+  .ev { border-top: 1px solid var(--hair); padding: .85rem 0 .85rem .9rem; }
+  .ev:first-of-type { border-top: none; }
+  .ev.confirmed { box-shadow: inset 2px 0 0 var(--confirmed); }
+  .ev.alleged { box-shadow: inset 2px 0 0 var(--alleged); }
+  .ev.unknown { box-shadow: inset 2px 0 0 var(--unknown); }
+  .ev .claim { font-size: .95rem; margin: 0 0 .2rem; }
+  .ev .note { font-size: .84rem; color: var(--muted); margin: 0; max-width: 70ch; }
+
+  /* code + tables */
+  pre {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: .9rem 1.1rem; overflow-x: auto; margin: 0 0 1rem;
+    font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: .8rem; line-height: 1.65;
+    color: var(--ink);
+  }
+  code { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: .87em; color: var(--ink-strong); }
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .87rem; min-width: 30rem; }
+  th {
+    text-align: left; font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted);
+    font-weight: 600; padding: 0 .7rem .5rem 0; white-space: nowrap;
+  }
+  td { padding: .5rem .7rem .5rem 0; border-top: 1px solid var(--hair); vertical-align: top; }
+  td.num { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+
+  figure { margin: 0; }
+  figure img { width: 100%; display: block; border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); }
+  figcaption { font-size: .8rem; color: var(--muted); margin-top: .6rem; }
+
+  .swatches { display: flex; gap: 1.4rem; flex-wrap: wrap; align-items: flex-end; }
+  .tile { display: flex; align-items: center; justify-content: center; border-radius: 22%; }
+
+  ul.tight { margin: 0; padding-left: 1.1rem; }
+  ul.tight li { margin-bottom: .4rem; max-width: 66ch; }
+
+  footer { padding: 2.5rem 0 4rem; color: var(--muted); font-size: .85rem; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<header>
+  <div class="wrap bar">
+    <div class="lockup">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="3.5" y="5.5" width="3" height="13" rx="1.5" fill="var(--accent)"></rect>
+        <rect x="10" y="7.5" width="10.5" height="3" rx="1.5" fill="currentColor"></rect>
+        <rect x="10" y="13.5" width="7" height="3" rx="1.5" fill="currentColor"></rect>
+      </svg>
+      <span class="word">Incident Comms</span>
+    </div>
+    <div class="byline">Sean Ang · TinkerAcademy final project</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="kicker">Incident communications · judgement, not formatting</div>
+    <h1>The channel is the only record, and it is a mess.</h1>
+    <p class="lede">Paste the thread. Get an external holding statement, an internal update, and a timeline where every row cites the message it came from — and nothing that was only a guess.</p>
+    <div class="actions">
+      <a class="btn primary" href="https://github.com/angraysean12/finalproj">Source repository</a>
+      <a class="btn" href="#app">See it running</a>
+      <a class="btn" href="#evidence">Evidence</a>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="head"><h2>Problem</h2><span class="cite">fixtures/README.md</span></div>
+    <p>During an incident the message channel is the only contemporaneous record, and it is written under pressure. Messages arrive out of order. Two people timestamp the same event differently, and one timestamp is <code>before lunch</code>. Someone guesses at the cause and the guess gets repeated until it sounds established. Someone names the colleague who clicked the link. Someone posts a joke, and someone posts about a jammed printer that has nothing to do with anything.</p>
+    <p>Within twenty minutes, one person has to turn that into something publishable. <strong>The failure mode is not slow writing — it is publishing a sentence that was never confirmed.</strong> A withdrawn figure gets quoted. "No evidence of exfiltration" is tidied into "no data was taken". A root-cause guess reaches a public statement, and the organisation is now committed to it.</p>
+    <p>None of that is a formatting problem, which is why it is not solved by a template.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head"><h2>Target user</h2><span class="cite">src/prompt.js</span></div>
+    <div class="grid2">
+      <div class="panel">
+        <p><strong>Primary — the duty officer on shift.</strong> The person holding the pager at a public-sector or regulated organisation who has to send something soon, and who will be held to every word of it afterwards. They are not a comms specialist and they are doing this while the incident is still running.</p>
+      </div>
+      <div class="panel">
+        <p><strong>Secondary — the incident lead.</strong> Needs the candid internal update to brief colleagues, and the sourced timeline for the post-incident review, where "who knew what, when" is the whole question.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head"><h2>Outcome metric</h2><span class="cite">eval/traps.js</span></div>
+    <div class="panel">
+      <div class="metric">
+        <span class="fig">49/50</span>
+        <span class="unit">planted traps held on the last full evaluation run. The metric is <strong>zero unconfirmed claims reaching an external statement</strong> — every trap is one specific way that could happen.</span>
+      </div>
+    </div>
+    <p style="margin-top:1.1rem">Speed is the secondary metric and it is already acceptable: <strong>16–103 seconds</strong> from paste to draft, against roughly twenty minutes of writing by hand. It is deliberately second. A tool that drafts in four seconds and promotes one guess in fifty runs is not a faster tool, it is a liability that looks authoritative.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head"><h2>Riskiest assumption</h2><span class="cite">CLAUDE.md</span></div>
+    <div class="panel" style="border-left: 3px solid var(--alleged);">
+      <p style="font-size:1.05rem"><strong>That a model can hold the line between <em>confirmed</em> and <em>alleged</em> reliably enough that a duty officer can send the output without re-reading the source thread.</strong></p>
+      <p>If it cannot, the product is worse than nothing. Prose from a model is fluent and confident whether or not it is warranted, so a single promoted guess does not look like an error — it looks like a finding. The person sending it has no signal that this sentence is the one to check.</p>
+    </div>
+  </div>
+</section>
+
+<section id="evidence">
+  <div class="wrap">
+    <div class="head"><h2>Evidence gathered</h2><span class="cite">tagged with the app's own taxonomy</span></div>
+    <p style="margin-bottom:1.4rem">The app never promotes a guess to a fact. Neither does this page: every claim below carries the status the product would give it.</p>
+
+    <div class="ev confirmed">
+      <p class="claim"><span class="pill confirmed">Confirmed</span> &nbsp;49 of 50 assertions held across four fixture threads on the last full run.</p>
+      <p class="note">Run with <code>npm run eval</code>, which drafts every fixture through the real loop and checks the planted traps. Named individuals stayed out of all four; the retracted figure of 12 was not used; "no evidence of exfiltration" was not upgraded into an assurance; the joke, the coffee run, the jammed printer and the pasted stack trace all stayed out of the timeline.</p>
+    </div>
+
+    <div class="ev alleged">
+      <p class="claim"><span class="pill alleged">Alleged</span> &nbsp;The one failure was real, and it is intermittent.</p>
+      <p class="note">On the overnight-payments thread, <code>1,180</code> — a failed-attempt count the thread itself corrects to 412 distinct users, inflated by retries — reached the external holding statement. Re-running the same fixture produced a clean statement, so it appeared in one of two observed runs. Called alleged rather than confirmed because two samples is not a rate. It is exactly the class of defect that reading four fixtures by eye would miss.</p>
+    </div>
+
+    <div class="ev confirmed">
+      <p class="claim"><span class="pill confirmed">Confirmed</span> &nbsp;Reasoning effort is a far bigger lever on latency than model choice.</p>
+      <p class="note">On the phishing thread: default effort 112s and 8,106 output tokens; <code>low</code> 50s; <code>minimal</code> 16s and 1,986 tokens — with the same traps still passing. Seven models were measured; the spread between them was under 5×, and "flash" in a model name predicted nothing.</p>
+    </div>
+
+    <div class="ev confirmed">
+      <p class="claim"><span class="pill confirmed">Confirmed</span> &nbsp;The long fixture found two real bugs in the deterministic code.</p>
+      <p class="note"><code>parseThread</code> read <code>java.sql.SQLTransientConnectionException:</code> as a speaker, and <code>normaliseAndSortEvents</code> sorted an entire evening after midnight. Both are now covered by unit tests — 26 pass over the pure logic.</p>
+    </div>
+
+    <div class="ev alleged">
+      <p class="claim"><span class="pill alleged">Alleged</span> &nbsp;The output caps are what stop identifying detail surviving the no-names rule.</p>
+      <p class="note">Capping the timeline at 8 rows forces messages to be merged into events rather than transcribed. That is what stopped a draft writing "a Finance staff member said <em>she</em> entered her password" — an identifying detail that passed the no-names rule. Observed while tuning; not isolated in a controlled comparison.</p>
+    </div>
+
+    <div class="ev unknown">
+      <p class="claim"><span class="pill unknown">Unknown</span> &nbsp;Whether a duty officer would actually send a draft unedited.</p>
+      <p class="note">No user testing has been done. The fixtures are constructed from real incident-thread failure modes, but they are written by the author, not collected from live incidents — and never should be, since the thread goes to a third-party endpoint. This is the largest open gap and it is the next thing to close.</p>
+    </div>
+  </div>
+</section>
+
+<section id="app">
+  <div class="wrap">
+    <div class="head"><h2>The app</h2><span class="cite">localhost:8787</span></div>
+    <p>A single Cloudflare Worker. <strong>It runs locally</strong> — screenshots below are the real thing on the phishing fixture, drafted in about 40 seconds. A Worker is deployed at <code>incident-comms.angraysean12.workers.dev</code> and serves the page, but its draft endpoint was still erroring at last check <span class="pill unknown">Unknown</span> — so the local run is the honest evidence.</p>
+    <pre>npm install
+cp .env.example .env      # add OPENCODE_API_KEY
+npm run dev               # http://localhost:8787</pre>
+    <div class="grid2" style="margin-top:1.4rem">
+      <figure>
+        <img src="__SHOT1__" alt="Incident Comms with the phishing thread pasted, showing the external holding statement and internal update side by side.">
+        <figcaption>The two statements. No individual is named; the cause is left under investigation; "no evidence of mailbox access or data exfiltration" is not upgraded into an assurance.</figcaption>
+      </figure>
+      <figure>
+        <img src="__SHOT2__" alt="The sourced timeline, each row tagged confirmed and citing a message number, above the still-open questions.">
+        <figcaption>The timeline. Every row cites the message it came from, and the unreadable timestamp is shown as <code>unreadable (~lunch)</code> rather than being guessed at or dropped.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head"><h2>Extra-knowledge build — the evaluation</h2><span class="cite">eval/run.js · eval/traps.js</span></div>
+    <p>The fixtures were always the eval set, but checking them meant reading four drafts by eye after every prompt change. That is the step that quietly stops happening. So the trap table became executable.</p>
+
+    <p><strong>What it enabled.</strong> Every claim in <code>fixtures/README.md</code> that can be checked without a human is now a pure function over the drafted artefacts — 50 assertions across four threads, covering the response contract, the word and row caps, and each planted trap. It exits non-zero on failure, so a change that got dumber fails loudly.</p>
+
+    <pre>$ npm run eval
+
+phishing  (phishing-credentials.txt)
+  42.9s · 8 rows · parsed 18 events server-side · usage in=1675 out=2310
+  ✓ holding is at most 120 words
+  ✓ every row cites a message that exists
+  ✓ no individual is named
+  ✓ the attribution guess stays out of holding
+  ✓ absence of evidence is not upgraded to evidence of absence
+  ✓ the retracted figure is not used
+  ✓ the coffee run is not an event
+
+overnight payments  (overnight-payments.txt)
+  69.9s · 8 rows · parsed 55 events server-side · usage in=2492 out=2941
+  ✗ the inflated attempt count stays out of holding
+      holding contains /1,?180/
+
+49/50 traps held.</pre>
+
+    <p><strong>Evidence it worked.</strong> It caught a genuine defect on its first full run — the one shown above — and that defect is intermittent, so it is precisely what a manual read-through would have missed.</p>
+
+    <div class="grid2" style="margin-top:1.4rem">
+      <div class="panel">
+        <p style="font-size:.95rem"><strong>Limitation.</strong> The checks are regexes. They catch the phrasings they were written for, not a fluent rewording that means the same thing — a statement could say "customers' data is safe" and pass every assertion. The harness prints its own blind spots at the end of each run rather than letting a green result imply more than it means. Closing this properly needs a model grading the judgement, not a pattern matching the words.</p>
+      </div>
+      <div class="panel">
+        <p style="font-size:.95rem"><strong>Failed attempt.</strong> The first version ran all four fixtures in parallel. Each run swapped <code>console.log</code> to capture the loop's output, and on finishing restored whatever it had found there — which was another run's stub. The restores chained, output vanished into a dead array, and the harness printed almost nothing while appearing to succeed. Fixed by running sequentially, which also makes the per-fixture timings mean something.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head"><h2>How it works</h2><span class="cite">src/loop.js · src/tools.js</span></div>
+    <p>The thread is parsed and ordered <strong>on the server</strong>, before the model sees it, so the model never re-types the thread as JSON just to get it sorted — that transcription was the single largest source of generated tokens. When the parse looks trustworthy the model is handed the ordered events and only one tool, which collapses the run to a single round.</p>
+    <p>The response shape is guaranteed by <strong>terminating on a tool call, not by parsing prose</strong>. <code>emit_incident_comms</code> has no implementation; its schema is the response contract, and the loop returns that call's arguments. There is no free-text path out.</p>
+    <p>The sorter <strong>reports rather than resolves</strong>. A timestamp clash or an unreadable time comes back as a note for the model to surface, and no event is ever dropped — an unreadable time keeps its original wording and sorts to the end. A missing message is worse than an unsorted one, and the whole product claim is that the app does not quietly invent certainty.</p>
+    <div class="scroll" style="margin-top:1.2rem">
+      <table>
+        <thead><tr><th>Fixture</th><th>Messages</th><th>Rows out</th><th>Draft time</th><th>Traps</th></tr></thead>
+        <tbody>
+          <tr><td>portal outage</td><td class="num">9</td><td class="num">6</td><td class="num">103.1s</td><td class="num">11/11</td></tr>
+          <tr><td>mis-sent letters</td><td class="num">10</td><td class="num">8</td><td class="num">51.2s</td><td class="num">11/11</td></tr>
+          <tr><td>phishing</td><td class="num">18</td><td class="num">8</td><td class="num">42.9s</td><td class="num">14/14</td></tr>
+          <tr><td>overnight payments</td><td class="num">55</td><td class="num">8</td><td class="num">69.9s</td><td class="num">13/14</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head"><h2>Identity</h2><span class="cite">design/</span></div>
+    <p>The mark is one timeline row, abstracted: the coloured status rail, and the text it stands beside. Read the other way it is a blockquote — a statement someone is standing behind, which is what a holding statement is. The two bars are different lengths on purpose: eighteen messages in, eight events out.</p>
+    <div class="panel" style="margin-top:1.2rem">
+      <div class="swatches">
+        <div>
+          <div class="tile" style="width:104px;height:104px;background:#14171a;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+              <rect x="3.5" y="5.5" width="3" height="13" rx="1.5" fill="#6ea8ff"></rect>
+              <rect x="10" y="7.5" width="10.5" height="3" rx="1.5" fill="#e8eaed"></rect>
+              <rect x="10" y="13.5" width="7" height="3" rx="1.5" fill="#e8eaed"></rect>
+            </svg>
+          </div>
+          <div class="cite" style="margin-top:.6rem">icon · dark</div>
+        </div>
+        <div>
+          <div class="tile" style="width:104px;height:104px;background:#ffffff;border:1px solid var(--line);">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+              <rect x="3.5" y="5.5" width="3" height="13" rx="1.5" fill="#1f6feb"></rect>
+              <rect x="10" y="7.5" width="10.5" height="3" rx="1.5" fill="#16191d"></rect>
+              <rect x="10" y="13.5" width="7" height="3" rx="1.5" fill="#16191d"></rect>
+            </svg>
+          </div>
+          <div class="cite" style="margin-top:.6rem">icon · light</div>
+        </div>
+        <div style="flex-grow:1;min-width:16rem">
+          <div class="lockup" style="gap:.85rem">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3.5" y="5.5" width="3" height="13" rx="1.5" fill="var(--accent)"></rect>
+              <rect x="10" y="7.5" width="10.5" height="3" rx="1.5" fill="currentColor"></rect>
+              <rect x="10" y="13.5" width="7" height="3" rx="1.5" fill="currentColor"></rect>
+            </svg>
+            <span class="word" style="font-size:1.75rem">Incident Comms</span>
+          </div>
+          <div class="cite" style="margin-top:.8rem">logo · IBM Plex Mono Medium, tracking −0.02em</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p style="margin-bottom:.6rem">Threads are sent to a third-party model endpoint and are not stored. Never paste a real incident thread.</p>
+    <p style="margin:0">Incident Comms · Sean Ang · TinkerAcademy final project · <a href="https://github.com/angraysean12/finalproj">github.com/angraysean12/finalproj</a></p>
+  </div>
+</footer>
