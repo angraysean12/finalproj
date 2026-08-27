@@ -39,6 +39,11 @@
   button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
   button:disabled { opacity: .55; cursor: default; }
   .status { color: var(--muted); font-size: .9rem; }
+  .examples { display: flex; gap: .5rem; flex-wrap: wrap; margin: 0 0 .8rem; }
+  .examples p { width: 100%; margin: 0 0 .1rem; color: var(--muted); font-size: .9rem; }
+  button.example { text-align: left; padding: .45rem .7rem; line-height: 1.3; }
+  button.example .note { display: block; color: var(--muted); font-size: .78rem; }
+  button.example[aria-pressed="true"] { border-color: var(--accent); }
   .panes { display: grid; gap: 1rem; margin-top: 1.5rem; grid-template-columns: 1fr; }
   @media (min-width: 62rem) { .panes { grid-template-columns: 1fr 1fr; } .wide { grid-column: 1 / -1; } }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem; }
@@ -66,11 +71,12 @@
   <h1>Incident Comms</h1>
   <p class="sub">Paste a messy incident thread. Get a holding statement, an internal update and a sourced timeline.</p>
 
+  <div class="examples" id="examples"></div>
+
   <textarea id="thread" placeholder="14:32 Ops: users reporting timeouts on the portal&#10;14:35 Dev: probably the database again&#10;..."></textarea>
 
   <div class="row">
     <button class="primary" id="draft">Draft comms</button>
-    <button id="example">Load example</button>
     <span class="status" id="status"></span>
   </div>
 
@@ -98,20 +104,52 @@
 </main>
 
 <script type="module">
-  const EXAMPLE = `14:47 Priya: anyone else seeing the appointment portal time out?
-14:32 Ops: getting reports of timeouts on the booking portal, looking now
-14:52 Dev: it's the database again, same as last month
-14:41 Ops: confirmed - portal is returning 504s for about half of requests
-15:10 Comms: do we need to say anything publicly yet
-14:52 Ravi: lol it's always the database
-15:02 Ops: failed over to the standby replica, error rate dropping
-sometime around 3: Dev: root cause looks like the connection pool, not confirmed
-15:20 Ops: error rate back to normal, monitoring for another 30 min`;
-
   const el = (id) => document.getElementById(id);
   const statusEl = el("status");
 
-  el("example").addEventListener("click", () => { el("thread").value = EXAMPLE; });
+  // The examples are the fixture threads themselves, served by the Worker from
+  // fixtures/ — so what you can click here is exactly what the traps are
+  // checked against. Failing to load them leaves the paste box working.
+  loadExamples();
+
+  async function loadExamples() {
+    let examples;
+    try {
+      const res = await fetch("/examples");
+      if (!res.ok) return;
+      examples = await res.json();
+    } catch {
+      return;
+    }
+
+    const container = el("examples");
+    const intro = document.createElement("p");
+    intro.textContent = "Paste your own below, or start from one of these:";
+    container.append(intro);
+
+    for (const example of examples) {
+      const button = document.createElement("button");
+      button.className = "example";
+      button.type = "button";
+      button.setAttribute("aria-pressed", "false");
+      button.append(example.label);
+
+      const note = document.createElement("span");
+      note.className = "note";
+      note.textContent = example.note;
+      button.append(note);
+
+      button.addEventListener("click", () => {
+        el("thread").value = example.thread;
+        for (const other of container.querySelectorAll("button.example")) {
+          other.setAttribute("aria-pressed", String(other === button));
+        }
+        setStatus("");
+      });
+
+      container.append(button);
+    }
+  }
 
   el("draft").addEventListener("click", async () => {
     const thread = el("thread").value.trim();
