@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Incident Comms — a thread in, publishable comms out</title>
+<meta name="description" content="Paste a messy incident thread. Get an external holding statement, an internal update and a sourced timeline. A Cloudflare Worker that makes the confirmed-or-alleged call a rule set cannot." />
+<meta property="og:title" content="Incident Comms" />
+<meta property="og:description" content="A thread in, publishable comms out — in about sixteen seconds, with the guess left out." />
+<meta property="og:type" content="website" />
+<style>
+  :root {
+    --bg: #14171a; --card: #1c2024; --raise: #22272c;
+    --ink: #e8eaed; --muted: #9aa3ad; --dim: #6f7883;
+    --line: #2c3238; --accent: #6ea8ff;
+    --confirmed: #6ddba0; --confirmed-bg: #14301f;
+    --alleged: #f0c07a; --alleged-bg: #33260f;
+    --unknown: #9aa3ad; --unknown-bg: #24292e;
+    --danger: #ff9098;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 63rem; margin: 0 auto; padding: 0 1.25rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: #a8caff; text-decoration: underline; }
+
+  /* ---------- shared vocabulary, lifted from src/ui.html ---------- */
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 10px; padding: 1.1rem 1.25rem;
+  }
+  .label {
+    font-size: .72rem; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; margin: 0;
+  }
+  .badge {
+    display: inline-block; padding: .1rem .5rem; border-radius: 99px;
+    font-size: .72rem; font-weight: 600; font-family: var(--sans);
+  }
+  .badge.confirmed { color: var(--confirmed); background: var(--confirmed-bg); }
+  .badge.alleged   { color: var(--alleged);   background: var(--alleged-bg); }
+  .badge.unknown   { color: var(--unknown);   background: var(--unknown-bg); }
+  code, .mono { font-family: var(--mono); font-size: .9em; }
+  code { background: var(--raise); padding: .1rem .35rem; border-radius: 4px; color: #cfd6de; }
+
+  /* ---------- section rhythm ---------- */
+  section { padding: 4.5rem 0; border-top: 1px solid var(--line); }
+  .sec-head { margin-bottom: 2rem; }
+  .sec-num {
+    font-family: var(--mono); font-size: .78rem; color: var(--dim);
+    letter-spacing: .04em;
+  }
+  h2 { font-size: 1.7rem; line-height: 1.25; margin: .35rem 0 .5rem; letter-spacing: -.01em; }
+  .sec-head p { color: var(--muted); margin: 0; max-width: 44rem; text-wrap: pretty; }
+  h3 { font-size: 1rem; margin: 0 0 .4rem; }
+  p { text-wrap: pretty; }
+
+  /* ---------- hero ---------- */
+  header.hero { padding: 5rem 0 4rem; }
+  .eyebrow {
+    font-family: var(--mono); font-size: .76rem; color: var(--dim);
+    letter-spacing: .04em; margin: 0 0 1.1rem;
+  }
+  h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.05; margin: 0 0 1rem; letter-spacing: -.025em; }
+  .offer { font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--muted); margin: 0 0 2.25rem; max-width: 40rem; text-wrap: pretty; }
+  .offer strong { color: var(--ink); font-weight: 600; }
+  .cta-row { display: flex; gap: .7rem; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font: 600 .95rem/1 var(--sans); padding: .7rem 1.1rem;
+    border-radius: 7px; border: 1px solid var(--line);
+    background: var(--card); color: var(--ink); cursor: pointer;
+  }
+  .btn:hover { text-decoration: none; border-color: #3d454d; color: var(--ink); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #0b1220; }
+  .btn.primary:hover { background: #8bbaff; border-color: #8bbaff; color: #0b1220; }
+  .btn svg { width: 16px; height: 16px; }
+
+  /* ---------- metric ---------- */
+  .metric {
+    margin-top: 3.25rem; display: grid; gap: 1.5rem;
+    grid-template-columns: 1fr; align-items: center;
+  }
+  @media (min-width: 48rem) { .metric { grid-template-columns: auto 1fr; gap: 2.5rem; } }
+  .metric-fig { display: flex; align-items: baseline; gap: .6rem; }
+  .metric-now { font: 700 clamp(3rem, 9vw, 4.5rem)/1 var(--mono); color: var(--confirmed); letter-spacing: -.03em; }
+  .metric-was { font-family: var(--mono); font-size: .95rem; color: var(--dim); }
+  .metric-was s { text-decoration-color: var(--dim); }
+  .metric-name { font-size: .95rem; color: var(--muted); margin: .1rem 0 0; }
+  .metric-name b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- bars ---------- */
+  .bars { display: grid; gap: .55rem; margin: 0; }
+  .bar-row { display: grid; grid-template-columns: 4.6rem 1fr auto; align-items: center; gap: .7rem; font-family: var(--mono); font-size: .8rem; }
+  .bar-key { color: var(--muted); }
+  .bar-track { background: var(--raise); border-radius: 3px; height: 12px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; background: var(--dim); }
+  .bar-fill.best { background: var(--confirmed); }
+  .bar-val { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* ---------- grids ---------- */
+  .grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 46rem) { .grid.two { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 60rem) { .grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 46rem) and (max-width: 59.99rem) { .grid.four { grid-template-columns: 1fr 1fr; } }
+
+  /* ---------- 4Cs ---------- */
+  .c-card { display: flex; flex-direction: column; gap: .55rem; }
+  .c-key {
+    font-family: var(--mono); font-size: .74rem; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600;
+  }
+  .c-card p { margin: 0; font-size: .93rem; color: var(--muted); }
+  .c-card p strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- tables ---------- */
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: .89rem; min-width: 30rem; }
+  th {
+    text-align: left; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; padding: 0 .9rem .5rem 0; white-space: nowrap;
+  }
+  td { padding: .55rem .9rem .55rem 0; border-top: 1px solid var(--line); vertical-align: top; color: var(--muted); }
+  td.ink { color: var(--ink); }
+  td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.win td { color: var(--ink); }
+  tr.win td.num { color: var(--confirmed); font-weight: 600; }
+
+  /* ---------- quote / trap ---------- */
+  .trap { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  @media (min-width: 52rem) { .trap { grid-template-columns: 1fr 1fr; } }
+  .trap > div { padding: 1.1rem 1.25rem; background: var(--card); }
+  .trap > div + div { border-top: 1px solid var(--line); }
+  @media (min-width: 52rem) { .trap > div + div { border-top: 0; border-left: 1px solid var(--line); } }
+  .trap p { margin: .5rem 0 0; font-size: .93rem; }
+  .quote { font-family: var(--mono); font-size: .85rem; line-height: 1.55; color: var(--ink); }
+  .wrong { color: var(--danger); }
+  .right { color: var(--confirmed); }
+
+  /* ---------- pipeline ---------- */
+  .pipe { display: grid; gap: .55rem; font-family: var(--mono); font-size: .82rem; }
+  .pipe-step { display: grid; grid-template-columns: 1.6rem 1fr; gap: .8rem; align-items: start; padding: .7rem .9rem; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+  .pipe-n { color: var(--dim); }
+  .pipe-what { color: var(--ink); }
+  .pipe-note { color: var(--muted); font-family: var(--sans); font-size: .85rem; display: block; margin-top: .2rem; }
+  .pipe-rule { color: var(--dim); font-size: .78rem; padding-left: .3rem; }
+
+  /* ---------- shots ---------- */
+  figure { margin: 0; }
+  .shot {
+    width: 100%; height: auto; display: block; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--card);
+  }
+  figcaption { color: var(--muted); font-size: .85rem; margin-top: .65rem; text-wrap: pretty; }
+  figcaption b { color: var(--ink); font-weight: 600; }
+  .shots { display: grid; gap: 2rem; }
+
+  /* ---------- lists ---------- */
+  ul.plain { list-style: none; margin: 0; padding: 0; display: grid; gap: .7rem; }
+  ul.plain li { display: grid; grid-template-columns: auto 1fr; gap: .7rem; font-size: .93rem; color: var(--muted); align-items: start; }
+  ul.plain li b { color: var(--ink); font-weight: 600; }
+  .tick { color: var(--confirmed); font-family: var(--mono); line-height: 1.6; }
+
+  /* ---------- callout ---------- */
+  .callout { border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem 1.25rem; background: var(--raise); }
+  .callout p { margin: .45rem 0 0; font-size: .93rem; color: var(--muted); }
+  .callout p:first-of-type { margin-top: 0; }
+
+  /* ---------- footer ---------- */
+  footer { border-top: 1px solid var(--line); padding: 3rem 0 4rem; }
+  .foot-row { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: space-between; align-items: baseline; }
+  footer p { margin: 0; color: var(--dim); font-size: .87rem; }
+  .warn { color: var(--alleged); }
+
+  /* ---------- narrow screens ---------- */
+  /* Long identifiers (java.sql.SQLTransientConnectionException) and monospace
+     quotes are the two things that push the body into a horizontal scroll. */
+  code, .quote, .mono { overflow-wrap: anywhere; }
+  h1, h2, h3 { overflow-wrap: break-word; }
+  @media (max-width: 30rem) {
+    body { font-size: 15px; }
+    .wrap { padding: 0 1rem; }
+    section { padding: 3.25rem 0; }
+    header.hero { padding: 3.25rem 0 3rem; }
+    h1 { font-size: 2.05rem; letter-spacing: -.02em; }
+    h2 { font-size: 1.4rem; }
+    .quote { font-size: .78rem; }
+    .card { padding: 1rem; }
+    .trap > div { padding: 1rem; }
+    .btn { flex: 1 1 auto; justify-content: center; }
+    .metric { margin-top: 2.5rem; }
+    .bar-row { grid-template-columns: 3.9rem 1fr auto; font-size: .74rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================= HERO ============================= -->
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Cloudflare Worker · TinkerAcademy final project</p>
+    <h1>A thread in,<br />publishable comms out.</h1>
+    <p class="offer">
+      During an incident, someone has to turn a chaotic chat thread into something
+      the public can read. Paste the thread. Get a holding statement, an internal
+      update and a sourced timeline &mdash; <strong>with the guess left out</strong>.
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="https://github.com/angraysean12/finalproj">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        Read the source
+      </a>
+      <a class="btn" href="#product">How it works</a>
+      <a class="btn" href="#evidence">See the evidence</a>
+    </div>
+
+    <div class="metric">
+      <div>
+        <div class="metric-fig">
+          <span class="metric-now">16s</span>
+          <span class="metric-was">was <s>112s</s></span>
+        </div>
+        <p class="metric-name"><b>Time to publishable draft</b> &mdash; recorded on the hardest fixture</p>
+      </div>
+      <div class="bars">
+        <div class="bar-row">
+          <span class="bar-key">before</span>
+          <span class="bar-track"><span class="bar-fill" style="width: 100%"></span></span>
+          <span class="bar-val">112s</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-key">low</span>
+          <span class="bar-track"><span class="bar-fill" style="width: 44.6%"></span></span>
+          <span class="bar-val">50s</span>
+        </div>
+        <div class="bar-row">
+          <span class="bar-key">shipped</span>
+          <span class="bar-track"><span class="bar-fill best" style="width: 14.3%"></span></span>
+          <span class="bar-val">16s</span>
+        </div>
+        <p style="margin:.5rem 0 0;font-size:.78rem;color:var(--dim);font-family:var(--sans);line-height:1.5;max-width:30rem">
+          Wall clock tracks a shared endpoint, so it moves: three re-runs today came
+          back at 28s, 44s and 58s. The half the app controls &mdash; output tokens
+          &mdash; reproduces exactly.
+          <a href="#metric" style="color:var(--muted)">See the full numbers &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================= 1. PROBLEM ============================= -->
+<section id="problem">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">01 — the problem</span>
+      <h2>The person who has to speak is reading the same mess as everyone else.</h2>
+      <p>
+        Stated as the four Cs: what the problem is, what it costs, why it happens,
+        and what would show it is real.
+      </p>
+    </div>
+
+    <div class="grid four">
+      <article class="card c-card">
+        <span class="c-key">Clarity</span>
+        <h3>What is the problem?</h3>
+        <p>
+          A duty communications officer has to publish an accurate external statement
+          while an incident is still running. Their only source is the live chat
+          thread. Deciding what in it is <strong>a confirmed fact</strong> and what is
+          <strong>somebody's guess</strong> is the whole task &mdash; and it is a
+          judgement, not a formatting job.
+        </p>
+      </article>
+
+      <article class="card c-card">
+        <span class="c-key">Consequence</span>
+        <h3>What does it cost?</h3>
+        <p>
+          Two bad options. Take 30&ndash;45 minutes to write it carefully, during
+          which the organisation says nothing and the vacuum fills itself. Or move
+          fast and publish a guess. <strong>A guess corrected in public stops being
+          a detail and becomes the story</strong> &mdash; and it names, or blames,
+          a colleague on the way.
+        </p>
+      </article>
+
+      <article class="card c-card">
+        <span class="c-key">Cause</span>
+        <h3>Why does it happen?</h3>
+        <p>
+          Threads are written under pressure. Messages arrive out of order.
+          Timestamps contradict. Figures are retracted an hour later. Someone names
+          a colleague. And <strong>a guess repeated three times starts to read like
+          a fact</strong>. Nothing in that reduces to a rule you could write as a
+          <code>switch</code>.
+        </p>
+      </article>
+
+      <article class="card c-card">
+        <span class="c-key">Confirmation</span>
+        <h3>What evidence would show it is real?</h3>
+        <p>
+          Four fixture threads carrying <strong>32 planted traps</strong>, each one
+          drawn from a way real threads fail: a retraction, a false recovery, a
+          confident wrong diagnosis, a named victim. A tool that merely reformats
+          sails straight through every one of them.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= 2. METRIC ============================= -->
+<section id="metric">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">02 — the outcome metric</span>
+      <h2>Time to publishable draft: 112s → 16s.</h2>
+      <p>
+        One number, because it is the one that decides whether the tool gets used at
+        all. A duty officer who has to wait two minutes writes it by hand instead.
+      </p>
+    </div>
+
+    <div class="grid two">
+      <div class="card">
+        <p class="label">Where the time actually went</p>
+        <p style="margin:.7rem 0 0; color:var(--muted); font-size:.93rem">
+          Not the artefact &mdash; the artefact is under 300 words. It was
+          <strong style="color:var(--ink)">hidden reasoning</strong>, plus a whole
+          round-trip spent making the model re-type the thread as JSON just so it
+          could be sorted. Output tokens are the wall clock, so they are what the
+          fix had to move.
+        </p>
+        <div class="scroll" style="margin-top:1.1rem">
+          <table>
+            <thead>
+              <tr><th>reasoning_effort</th><th>Wall clock</th><th>Output tokens</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="num">default</td><td class="num">112s</td><td class="num">8,106</td></tr>
+              <tr><td class="num">low</td><td class="num">50s</td><td class="num">3,137</td></tr>
+              <tr class="win"><td class="num">minimal &larr; shipped</td><td class="num">16s</td><td class="num">1,986</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin:.9rem 0 0;font-size:.87rem;color:var(--muted)">
+          A 4.1&times; drop in output tokens, and a 7&times; drop in wall clock at the
+          time of measurement.
+        </p>
+      </div>
+
+      <div class="card">
+        <p class="label">The two changes that did it</p>
+        <ul class="plain" style="margin-top:.9rem">
+          <li><span class="tick">1</span><span>
+            <b>Parse the thread on the server.</b> <code>parseThread</code> reads
+            <code>&lt;time&gt; &lt;speaker&gt;: &lt;text&gt;</code> in about twenty lines of
+            pure JavaScript, sorts the events, and hands them to the model ordered.
+            That removes an entire model round-trip &mdash; the run collapses from
+            two rounds to one.
+          </span></li>
+          <li><span class="tick">2</span><span>
+            <b>Cap the reasoning, not the answer.</b> <code>reasoning_effort</code>
+            drops to <code>minimal</code>. The judgement quality is unchanged; only
+            the invisible deliberation is cut.
+          </span></li>
+        </ul>
+        <div class="callout" style="margin-top:1.2rem">
+          <p class="label">The guardrail on this number</p>
+          <p>
+            A faster setting that got dumber is not a faster app. All
+            <b style="color:var(--ink)">32 traps still hold at <code>minimal</code></b>
+            &mdash; which is the only reason the number is allowed to ship.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:1.5rem">
+      <p class="label">What re-measurement showed — and why the metric is stated this way</p>
+      <p>
+        The 16s above is a recorded benchmark, not a guarantee. Re-running the same
+        fixture three times while writing this page returned
+        <b style="color:var(--ink)">28s, 44s and 58s</b>: the model runs on a shared
+        endpoint whose speed is not the app's to control. What
+        <i>is</i> the app's to control held steady across all three runs &mdash;
+        <b style="color:var(--ink)">1,791, 1,875 and 2,416 output tokens</b>, against
+        8,106 before the change.
+      </p>
+      <p>
+        So the honest claim is the narrower one: the work removed roughly
+        <b style="color:var(--ink)">four fifths of the tokens the app generates</b>,
+        and wall clock follows that down by whatever factor the endpoint is willing to
+        give on the day. Publishing 16s as a flat promise would have been the same
+        mistake the product exists to prevent &mdash; stating something as confirmed
+        that the evidence only supports as observed once.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= 3. RISKIEST ASSUMPTION ============================= -->
+<section id="evidence">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">03 — the riskiest assumption</span>
+      <h2>That a model can be trusted to leave the guess out.</h2>
+      <p>
+        Everything else in this project is recoverable. This one is not: if the model
+        will not reliably keep an unconfirmed cause out of a public statement, the
+        tool is worse than useless &mdash; it publishes confident, wrong statements
+        faster than a human could.
+      </p>
+    </div>
+
+    <div class="callout" style="margin-bottom:1.75rem">
+      <p class="label">How it was tested</p>
+      <p>
+        Not by reading the output and nodding. Four threads were written
+        <b style="color:var(--ink)">specifically to break it</b>, each trap documented
+        in a table with the behaviour it demands. They are the demo input and the eval
+        set: change the prompt, re-run all four, check every trap still holds.
+      </p>
+    </div>
+
+    <div class="grid four" style="margin-bottom:1.75rem">
+      <div class="card">
+        <p class="label">portal-outage</p>
+        <p style="margin:.4rem 0 0"><span class="mono" style="color:var(--confirmed);font-size:1.5rem;font-weight:700">6/6</span></p>
+        <p style="margin:.25rem 0 0;font-size:.87rem;color:var(--muted)">Out-of-order messages, an unreadable time, a clash at 14:52.</p>
+      </div>
+      <div class="card">
+        <p class="label">mis-sent-letters</p>
+        <p style="margin:.4rem 0 0"><span class="mono" style="color:var(--confirmed);font-size:1.5rem;font-weight:700">5/5</span></p>
+        <p style="margin:.25rem 0 0;font-size:.87rem;color:var(--muted)">Three clock formats, a named colleague, a count nobody has.</p>
+      </div>
+      <div class="card">
+        <p class="label">phishing-credentials</p>
+        <p style="margin:.4rem 0 0"><span class="mono" style="color:var(--confirmed);font-size:1.5rem;font-weight:700">11/11</span></p>
+        <p style="margin:.25rem 0 0;font-size:.87rem;color:var(--muted)">A retracted figure, a named victim, a reporter already waiting.</p>
+      </div>
+      <div class="card">
+        <p class="label">overnight-payments</p>
+        <p style="margin:.4rem 0 0"><span class="mono" style="color:var(--confirmed);font-size:1.5rem;font-weight:700">10/10</span></p>
+        <p style="margin:.25rem 0 0;font-size:.87rem;color:var(--muted)">59 lines, two shifts, a recovery that did not hold.</p>
+      </div>
+    </div>
+
+    <p class="label" style="margin-bottom:.8rem">The sharpest trap in the set</p>
+    <div class="trap">
+      <div>
+        <p class="label">Line 16 of the thread</p>
+        <p class="quote" style="margin-top:.6rem">
+          10:52 SecOps: no evidence of exfiltration at<br />this point. still reviewing sign-in logs
+        </p>
+        <p>
+          A formatter reaches for the fluent paraphrase. It is one word away and it is
+          a different claim &mdash; the difference between what was looked for and what
+          was found. This is the only trap in the set that a confident, entirely wrong
+          answer would sail straight through.
+        </p>
+      </div>
+      <div>
+        <p class="label">The failure this is watching for</p>
+        <p class="quote wrong" style="margin-top:.6rem">
+          &times; &ldquo;No data was breached.&rdquo;
+        </p>
+        <p class="label" style="margin-top:1.1rem">What the app actually wrote</p>
+        <p class="quote right" style="margin-top:.6rem">
+          &check; &ldquo;To date there is no evidence of mailbox access or data
+          exfiltration.&rdquo;
+        </p>
+        <p>
+          Verbatim from a live run of this fixture. The hedge survives into the
+          published sentence: absence of evidence is never upgraded into evidence of
+          absence.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid two" style="margin-top:1.75rem">
+      <div class="card">
+        <p class="label">The fixtures found real bugs</p>
+        <p style="margin:.7rem 0 0;font-size:.93rem;color:var(--muted)">
+          Writing the 59-line overnight thread exposed two defects nothing else had:
+          <code>parseThread</code> was reading
+          <code>java.sql.SQLTransientConnectionException:</code> as a speaker, and
+          <code>normaliseAndSortEvents</code> was sorting the entire evening
+          <b style="color:var(--ink)">after</b> midnight. Both are now covered by tests.
+          Long fixtures earn their keep.
+        </p>
+      </div>
+      <div class="card">
+        <p class="label">And the deterministic half is tested</p>
+        <p style="margin:.7rem 0 0;font-size:.93rem;color:var(--muted)">
+          <b style="color:var(--ink)">26 tests, 26 passing</b>, over the pure functions
+          in <code>src/tools.js</code> &mdash; clock parsing across
+          <code>2.32pm</code>/<code>14:32</code>/<code>0645Z</code>, midnight rollover,
+          timestamp clashes, stack traces, wrapped lines. No network, no DOM. The more
+          the pure code does, the less the model has to.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= 4. EXPERIENCE ============================= -->
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">04 — the experience</span>
+      <h2>Built for someone reading it under pressure.</h2>
+      <p>
+        One screen. Paste, or start from a worked example. Every design decision below
+        is a constraint on the output, not a decoration on the page.
+      </p>
+    </div>
+
+    <div class="shots">
+      <figure>
+        <img class="shot" src="shot-input.jpg" width="1280" height="506"
+             alt="The Incident Comms input screen: a heading, four selectable example threads — Portal outage, Mis-sent letters, Phishing, Overnight payments — and a monospace textarea holding a pasted incident thread, above a Draft comms button." />
+        <figcaption>
+          <b>Nothing to configure.</b> No model picker, no temperature, no options.
+          The four fixtures are one click away, so a first-time visitor can see the
+          judgement being made before they trust it with a thread of their own.
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img class="shot" src="shot-artefacts.jpg" width="1280" height="842"
+             alt="Output panels: a holding statement for external use, an internal update, and a timeline table with Time, Event, Status and Source columns. Every row is badged Confirmed and cites a source message number." />
+        <figcaption>
+          <b>Three artefacts, and every timeline row cites the message it came from.</b>
+          That <span class="mono" style="color:var(--muted)">msg 25</span> column is the
+          product's whole posture: the reader can go back to the thread and check the
+          work rather than taking it on faith. Status is
+          <span class="badge confirmed">confirmed</span>,
+          <span class="badge alleged">alleged</span> or
+          <span class="badge unknown">unknown</span> &mdash; never blank.
+        </figcaption>
+      </figure>
+
+      <figure>
+        <img class="shot" src="shot-open.jpg" width="1280" height="234"
+             alt="A Still open panel listing four unresolved questions, including whether any payment was double-charged, pending a reconciliation result." />
+        <figcaption>
+          <b>What it does not know gets its own panel.</b> Most of the value in an
+          incident is knowing what still has to be chased. Capped at four lines,
+          because a list of twelve is a list nobody reads.
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="grid two" style="margin-top:2.25rem">
+      <div class="card">
+        <p class="label">The caps are load-bearing</p>
+        <ul class="plain" style="margin-top:.9rem">
+          <li><span class="tick">&rarr;</span><span>
+            <b>Timeline: at most 8 rows.</b> The cap forces the model to merge messages
+            into <i>events</i> rather than transcribe them. It is also what stopped it
+            writing &ldquo;a Finance staff member said <b>she</b> entered her
+            password&rdquo; &mdash; an identifying detail that had survived the
+            no-names rule.
+          </span></li>
+          <li><span class="tick">&rarr;</span><span>
+            <b>Holding: 120 words. Internal: 150.</b> Being brief is part of the task,
+            not a concession to it.
+          </span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <p class="label">Model output is treated as hostile</p>
+        <p style="margin:.7rem 0 0;font-size:.93rem;color:var(--muted)">
+          Statement text, timeline rows and status values all originate from the model,
+          so the page renders every one of them with <code>textContent</code> and
+          <code>createElement</code> &mdash; <b style="color:var(--ink)">never
+          <code>innerHTML</code></b>. A status value outside the enum falls back to
+          <span class="badge unknown">unknown</span> rather than styling whatever
+          string arrived.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= 5. PRODUCT ============================= -->
+<section id="product">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">05 — the build</span>
+      <h2>The response shape is guaranteed by where the run stops.</h2>
+      <p>
+        A single Cloudflare Worker. The interesting decision is that no code anywhere
+        parses model prose &mdash; there is no free-text path out of the loop at all.
+      </p>
+    </div>
+
+    <div class="grid two">
+      <div>
+        <p class="label" style="margin-bottom:.8rem">The fast path — one round</p>
+        <div class="pipe">
+          <div class="pipe-step">
+            <span class="pipe-n">01</span>
+            <span class="pipe-what">POST /draft { thread }
+              <span class="pipe-note">Up to 20,000 characters.</span></span>
+          </div>
+          <div class="pipe-rule">↓</div>
+          <div class="pipe-step">
+            <span class="pipe-n">02</span>
+            <span class="pipe-what">parseThread → normaliseAndSortEvents
+              <span class="pipe-note">Pure functions. No model involved. Ordered events, plus notes on anything that looked wrong.</span></span>
+          </div>
+          <div class="pipe-rule">↓</div>
+          <div class="pipe-step">
+            <span class="pipe-n">03</span>
+            <span class="pipe-what">model judges the ordered events
+              <span class="pipe-note">Only one tool is offered, so there is no round-trip left to spend.</span></span>
+          </div>
+          <div class="pipe-rule">↓</div>
+          <div class="pipe-step">
+            <span class="pipe-n">04</span>
+            <span class="pipe-what">emit_incident_comms( … )
+              <span class="pipe-note">The loop returns this call's arguments. That is the response.</span></span>
+          </div>
+        </div>
+        <p style="margin:1rem 0 0;font-size:.9rem;color:var(--muted)">
+          When a paste cannot be parsed the model extracts the messages itself and calls
+          the sort tool first &mdash; two rounds, slower, works on anything. Both paths
+          end at the same tool call, so nothing downstream cares which one ran.
+        </p>
+      </div>
+
+      <div>
+        <p class="label" style="margin-bottom:.8rem">Why that guarantees the shape</p>
+        <div class="card">
+          <p style="margin:0;font-size:.93rem;color:var(--muted)">
+            <code>emit_incident_comms</code> has
+            <b style="color:var(--ink)">no implementation</b>. It is a schema and
+            nothing else, and that schema <i>is</i> the response contract. Because
+            <code>runDraft</code> terminates by returning the call's arguments, an
+            unvalidated shape cannot reach the UI &mdash; there is no prose to
+            mis-parse, and no second-guessing a half-formed answer.
+          </p>
+          <p style="margin:.9rem 0 0;font-size:.93rem;color:var(--muted)">
+            <code>tool_choice</code> is deliberately left on <code>auto</code>. Forcing
+            the emit tool would stop the sort tool ever running on the fallback path.
+            <b style="color:var(--ink)">Tool availability, not <code>tool_choice</code>,
+            is what constrains the fast path.</b>
+          </p>
+        </div>
+
+        <div class="card" style="margin-top:1rem">
+          <p class="label">One rule the sort function follows</p>
+          <p style="margin:.6rem 0 0;font-size:.93rem;color:var(--muted)">
+            <b style="color:var(--ink)">It reports, it never resolves.</b> A timestamp
+            clash or an unreadable time comes back as a note for the model to surface,
+            and no event is ever dropped &mdash; an unreadable time keeps its original
+            wording and sorts to the end. A missing message is worse than an unsorted
+            one, and the entire product claim is that the app does not quietly invent
+            certainty.
+          </p>
+        </div>
+
+        <div class="card" style="margin-top:1rem">
+          <p class="label">Stack</p>
+          <p style="margin:.6rem 0 0;font-size:.93rem;color:var(--muted)">
+            Cloudflare Workers · vanilla ES modules, no framework, no build step ·
+            <code>node:test</code> · an OpenAI-compatible chat-completions endpoint,
+            swappable at one base URL. The API key lives in a Cloudflare secret and
+            never in the repo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= 6. EXTRA KNOWLEDGE ============================= -->
+<section id="extra">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">06 — the extra-knowledge build</span>
+      <h2>Benchmarking the endpoint, instead of guessing at it.</h2>
+      <p>
+        The app was slow and the obvious move was to swap the model. That instinct was
+        wrong, and the only way to find out was to build a measurement habit and run it.
+      </p>
+    </div>
+
+    <div class="grid two">
+      <div>
+        <p class="label" style="margin-bottom:.8rem">Every model on the endpoint, same fixture</p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>Model</th><th>Round 1</th><th>End to end</th></tr>
+            </thead>
+            <tbody>
+              <tr class="win"><td class="ink">deepseek-v4-flash <span style="color:var(--dim)">← shipped</span></td><td class="num">13s</td><td class="num">17s</td></tr>
+              <tr><td class="ink">kimi-k2.7-code</td><td class="num">15s</td><td class="num">—</td></tr>
+              <tr><td class="ink">minimax-m3</td><td class="num">27s</td><td class="num">—</td></tr>
+              <tr><td class="ink">kimi-k3</td><td class="num">29s</td><td class="num">114s</td></tr>
+              <tr><td class="ink">glm-5.3</td><td class="num">32s</td><td class="num">—</td></tr>
+              <tr><td class="ink">glm-5.3-flash</td><td class="num">78s</td><td class="num">—</td></tr>
+              <tr><td class="ink">minimax-m2.7</td><td class="num" style="color:var(--danger)">500</td><td class="num">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin:1rem 0 0;font-size:.9rem;color:var(--muted)">
+          Measured on <code>fixtures/portal-outage.txt</code>, round one only, so the
+          comparison is like for like.
+        </p>
+      </div>
+
+      <div>
+        <p class="label" style="margin-bottom:.8rem">What the measurements taught</p>
+        <ul class="plain">
+          <li><span class="tick">&rarr;</span><span>
+            <b>Latency varies by more than 5&times; across one endpoint.</b> Model
+            choice is a real lever &mdash; just not the biggest one.
+          </span></li>
+          <li><span class="tick">&rarr;</span><span>
+            <b>&ldquo;Flash&rdquo; in a model name predicts nothing.</b>
+            <code>glm-5.3-flash</code> was the slowest of the set, at six times the
+            speed of the fastest. Re-measure rather than assume.
+          </span></li>
+          <li><span class="tick">&rarr;</span><span>
+            <b>The bigger lever was not the model at all.</b> Swapping models bought
+            at best 5&times;. Cutting <code>reasoning_effort</code> and removing a
+            round-trip bought <b>7&times;</b> &mdash; on the same model.
+          </span></li>
+          <li><span class="tick">&rarr;</span><span>
+            <b>Log the number that is the wall clock.</b> Output tokens, on every
+            call. A change that looks like a speed-up is only real if that number
+            moved &mdash; which is how the 8,106&nbsp;&rarr;&nbsp;1,986 drop was
+            confirmed rather than felt.
+          </span></li>
+          <li><span class="tick">&rarr;</span><span>
+            <b>Fast is not free.</b> <code>kimi-k3</code> never populated
+            <code>openQuestions</code> across two runs. Speed and judgement have to be
+            checked together, which is what the trap table is for.
+          </span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:1.75rem">
+      <p class="label">Evidence the build worked</p>
+      <p>
+        The findings are written into <code>CLAUDE.md</code> as a standing rule for
+        whoever touches this next: <b style="color:var(--ink)">if the output looks
+        weak, raise <code>reasoning_effort</code> before you change the
+        model</b> &mdash; it is the cheaper knob and the one with the larger effect.
+        Either way, re-run all four fixtures, because the traps are the only thing
+        that tells you whether a faster setting got dumber. The measurement did not
+        just produce a number; it produced the process that protects it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= FOOTER ============================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div>
+        <p style="color:var(--ink);font-weight:600">Incident Comms</p>
+        <p style="margin-top:.25rem">
+          <a href="https://github.com/angraysean12/finalproj">github.com/angraysean12/finalproj</a>
+        </p>
+      </div>
+      <p class="warn" style="max-width:26rem">
+        The fixtures are synthetic and exist to be pasted. Never paste a real incident
+        thread into a third-party model endpoint.
+      </p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
