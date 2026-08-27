@@ -81,7 +81,7 @@ for any value outside the enum rather than styling an arbitrary string.
 
 ## Fixtures are the eval set
 
-`fixtures/` holds threads planted with specific traps: out-of-order messages,
+`fixtures/` holds four threads planted with specific traps: out-of-order messages,
 contradicting timestamps, an unreadable time, an unconfirmed root-cause guess, a named
 colleague, a joke. See `fixtures/README.md` for the full trap-by-trap table. Changing
 the prompt means re-running all three and checking the guess

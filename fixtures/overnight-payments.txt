@@ -1,0 +1,59 @@
+21:40 Helpdesk: two callers say the benefits payment portal rejects their login
+21:44 Ops: seeing elevated 500s on the payments API, about 4% of requests
+21:47 Priya: same here, cannot get past the OTP screen
+21:50 Ops: opening an incident. sev 3 for now
+21:52 Ravi: on it
+21:53 Arun: could be the OTP provider again
+21:58 Ops: 500 rate now 11%, raising to sev 2
+22:02 Kavitha: connection pool on payments-db is saturated, 200/200 in use
+22:05 Arun: told you, OTP provider retries are hammering us
+22:06 Ops: not confirmed. pool saturation could be a symptom not a cause
+22:11 Kavitha: killed 40 idle-in-transaction sessions, pool down to 150
+22:14 Ops: 500 rate falling, 3%
+22:15 Ravi: nice
+22:19 Ops: 500 rate 0.4%, back to baseline. standing down to monitoring
+22:20 Jolene: do we need a public notice
+22:22 Faisal: hold the notice, looks like we caught it
+22:24 Helpdesk: callers report success now
+22:31 Ops: declaring resolved. will write it up tomorrow
+22:47 Helpdesk: three new callers, same OTP failure
+22:49 Ops: reopening. 500 rate 9% and climbing
+22:51 Kavitha: pool saturated again, 200/200. same signature
+22:54 Arun: this is the OTP provider, I am certain
+22:55 Faisal: Jolene please prepare a holding notice, we may need it
+22:58 Vendor Liaison: OTP provider says their side is healthy, no incident open
+23:04 Kavitha: found it - a migration job from 21:30 is holding long transactions
+23:06 Kavitha: it was scheduled by the release last Thursday
+23:09 Ops: paused the migration job. watching the pool
+23:12 Arun: so not the OTP provider then
+23:13 Ravi: lol
+23:15 Ops: pool 90/200 and falling. 500 rate 2%
+23:22 Ops: 500 rate 0.3%. holding steady this time
+23:25 Jolene: notice drafted, not published. waiting on your word
+23:31 Faisal: keep it unpublished. impact window was short and mostly out of hours
+23:38 Helpdesk: total 31 callers tonight
+23:40 Helpdesk: correction, 34 callers. three were logged late
+23:44 Ops: how many failed payments though, that is the number Legal will want
+23:52 Kavitha: querying. rough count 1,180 failed payment attempts
+23:56 Kavitha: that 1,180 includes retries. distinct users is lower, still counting
+00:04 Ops: handing over to night shift. Wei Ming taking over
+00:06 Wei Ming: picked up. current state - migration job paused, pool healthy, 500s at baseline
+00:09 Wei Ming: recap for the log: portal login failures from about 21:40, cause is a
+long-running migration job saturating the payments-db connection pool
+00:14 Wei Ming: 500 rate 0.2%, pool 60/200
+00:15 Priya: the printer on level 4 is jammed again
+00:16 Ravi: wrong channel
+00:22 Wei Ming: distinct affected users confirmed at 412, from Kavitha's query
+00:31 Wei Ming: no evidence any payment was double-taken. finance reconciliation runs at 06:00
+00:38 Arun: pasting the error for the record
+java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available,
+request timed out after 30000ms
+at com.agency.payments.db.PoolManager.acquire(PoolManager.java:118)
+00:44 Wei Ming: migration job still paused. Arun is rewriting it to commit in batches
+00:51 Wei Ming: 500 rate 0.1%. no new helpdesk calls since 23:38
+01:05 Wei Ming: quiet. next check 02:00
+01:52 Wei Ming: 500 rate 0.1%, pool 45/200, no calls
+02:00 Wei Ming: reconciliation prep started early by finance, no discrepancies so far
+02:14 Faisal: good. leave the notice unpublished, we will decide at the 09:00 review
+02:20 Wei Ming: agreed. incident stays open until reconciliation confirms at 06:00
+02:30 Wei Ming: nothing further. handing to morning shift at 07:00

@@ -184,3 +184,68 @@ test("parseThread ignores blank lines", () => {
   assert.deepEqual(parseThread(""), []);
   assert.deepEqual(parseThread(null), []);
 });
+
+test("parseThread does not read a stack trace as a message", () => {
+  const events = parseThread(
+    "00:38 Arun: pasting the error for the record\n" +
+      "java.sql.SQLTransientConnectionException: HikariPool-1 - not available\n" +
+      "at com.agency.db.PoolManager.acquire(PoolManager.java:118)",
+  );
+
+  assert.equal(events.length, 1, "a dotted package name is not a speaker");
+  assert.equal(events[0].speaker, "Arun");
+  assert.match(events[0].text, /SQLTransientConnectionException/);
+});
+
+test("parseThread still accepts prose and numeric timestamps", () => {
+  assert.equal(parseThread("before lunch SecOps: reset done")[0].speaker, "SecOps");
+  assert.equal(parseThread("09:15 Ops: hello")[0].speaker, "Ops");
+});
+
+test("parseThread rejects a code-like prefix even with digits", () => {
+  const events = parseThread("14:32 Ops: see below\nresult[0] = Foo: bar");
+  assert.equal(events.length, 1, "an indexing expression is not a timestamp");
+});
+
+test("an overnight thread sorts across midnight, not around it", () => {
+  const { events, notes } = normaliseAndSortEvents([
+    { time: "21:40", speaker: "Helpdesk", text: "evening" },
+    { time: "23:56", speaker: "Ops", text: "late" },
+    { time: "00:04", speaker: "Wei Ming", text: "handover" },
+    { time: "02:30", speaker: "Wei Ming", text: "morning" },
+  ]);
+
+  assert.deepEqual(
+    events.map((e) => e.text),
+    ["evening", "late", "handover", "morning"],
+  );
+  assert.deepEqual(
+    events.map((e) => e.time),
+    ["21:40", "23:56", "00:04", "02:30"],
+    "the displayed clock stays a wall clock, with no day offset leaking in",
+  );
+  assert.ok(notes.some((n) => n.includes("crosses midnight")));
+});
+
+test("a shuffled same-day thread is not mistaken for a rollover", () => {
+  const { notes } = normaliseAndSortEvents([
+    { time: "14:47", speaker: "Priya", text: "b" },
+    { time: "14:32", speaker: "Ops", text: "a" },
+  ]);
+
+  assert.ok(!notes.some((n) => n.includes("crosses midnight")));
+});
+
+test("a rollover does not collide two events sharing a wall-clock time", () => {
+  const { notes } = normaliseAndSortEvents([
+    { time: "23:00", speaker: "A", text: "night one" },
+    { time: "09:15", speaker: "B", text: "next morning" },
+    { time: "09:15", speaker: "C", text: "also next morning" },
+  ]);
+
+  assert.equal(
+    notes.filter((n) => n.includes("both claim")).length,
+    1,
+    "the genuine same-minute clash is still reported exactly once",
+  );
+});

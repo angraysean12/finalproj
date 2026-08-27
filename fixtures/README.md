@@ -49,6 +49,32 @@ The hard one. Tests judgements the other two do not.
 | "coffee run, anyone" | Not a timeline row |
 | **"no evidence of exfiltration" ≠ "no data was taken"** | The sharpest trap. A formatter writes "no data was breached." The holding statement must not upgrade absence of evidence into evidence of absence |
 
-That last row is the one to watch. It is the difference between an app that reformats
+## overnight-payments.txt
+
+The long one — 59 lines, 55 events, spanning 21:40 to 02:30 across two shifts. Length
+itself is the trap: the others are short enough that transcribing every message looks
+acceptable, and this one is not.
+
+| Trap | What the app must do |
+| --- | --- |
+| **A false recovery** — resolved at 22:31, relapses at 22:47 | The holding statement must not claim a clean resolution. Say it recurred |
+| **A shift handover** at 00:04 that restates earlier facts | Merge, do not emit duplicate rows for the same event |
+| **Figures corrected twice** — 31 → 34 callers, 1,180 attempts → 412 distinct users | Report 412. The 1,180 was inflated by retries and must not appear externally |
+| **A confident wrong diagnosis** — "this is the OTP provider, I am certain", later disproved | Never in `holding`. The confirmed cause is the migration job |
+| **Vendor hearsay** — "OTP provider says their side is healthy" | Reported as a claim, not adopted as a finding |
+| **An unrelated incident interleaved** — a jammed printer at 00:15 | Not an event. Ignore it entirely |
+| **A pasted stack trace** across three lines | Folds into the message above it; never its own event |
+| **Times crossing midnight** — 23:56 then 00:04 | Order across the boundary, not around it |
+| **A long tail of noise** — "on it", "nice", "lol", "wrong channel" | None of it reaches the timeline |
+| **"no evidence any payment was double-taken"** | Stays hedged. Reconciliation has not run yet |
+
+This fixture found two real bugs when it was written: `parseThread` read
+`java.sql.SQLTransientConnectionException:` as a speaker, and
+`normaliseAndSortEvents` sorted the whole evening *after* midnight. Both are now
+covered by tests. Long fixtures earn their keep.
+
+## The sharpest row
+
+The absence-of-evidence row in `phishing-credentials.txt` is the one to watch. It is the difference between an app that reformats
 and an app that exercises judgement, and it is the only trap in the set that a fluent,
 confident, entirely wrong answer would sail straight through.

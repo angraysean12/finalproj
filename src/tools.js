@@ -25,7 +25,23 @@ export const STATUSES = ["confirmed", "alleged", "unknown"];
  * does not fool it, and why a capitalised word inside the message body does not
  * either.
  */
-const LINE = /^(.{0,48}?)\b([A-Z][A-Za-z.'-]*(?: [A-Z][A-Za-z.'-]*)?):\s+(.*)$/;
+const LINE = /^(.{0,48}?)\b([A-Z][A-Za-z.'-]{0,23}(?: [A-Z][A-Za-z.'-]{0,23})?):\s+(.*)$/;
+
+/**
+ * Is the text before the speaker plausibly a timestamp?
+ *
+ * Either it contains a digit ("09:15", "sometime around 3") or it is short prose
+ * ("before lunch"). Anything else — most importantly a dotted package name like
+ * `java.sql.` — is code that happens to contain a capitalised word and a colon,
+ * and must not be read as a message. A pasted stack trace is a continuation of
+ * the message above it, not an event of its own.
+ */
+function looksLikeTimestamp(prefix) {
+  const t = prefix.trim().replace(/[:\s]+$/, "");
+  if (t === "") return true;
+  if (/\d/.test(t)) return !/[(){}\[\]=;_/\\]/.test(t);
+  return t.length <= 24 && /^[A-Za-z ]+$/.test(t);
+}
 
 /**
  * Split a pasted thread into events, server-side.
@@ -46,7 +62,7 @@ export function parseThread(text) {
     if (line === "") continue;
 
     const match = LINE.exec(line);
-    if (match) {
+    if (match && looksLikeTimestamp(match[1])) {
       const [, time, speaker, body] = match;
       events.push({
         time: time.trim().replace(/[:\s]+$/, ""),
@@ -211,11 +227,48 @@ export function parseClock(raw) {
   return hours * 60 + minutes;
 }
 
-/** Render minutes since midnight back as a 24-hour clock. */
+/** Render minutes since midnight back as a 24-hour clock, ignoring any day offset. */
 export function formatClock(minutes) {
-  const h = String(Math.floor(minutes / 60)).padStart(2, "0");
-  const m = String(minutes % 60).padStart(2, "0");
+  const inDay = ((minutes % 1440) + 1440) % 1440;
+  const h = String(Math.floor(inDay / 60)).padStart(2, "0");
+  const m = String(inDay % 60).padStart(2, "0");
   return `${h}:${m}`;
+}
+
+/** A backwards jump larger than this, in thread order, reads as a new day. */
+const ROLLOVER_GAP_MINUTES = 12 * 60;
+
+/**
+ * Push post-midnight events onto the next day, in place, and return how many
+ * rollovers were inferred.
+ *
+ * A clock alone cannot say whether 00:15 precedes or follows 23:50, so this uses
+ * the order the messages were *written* in as the tiebreak: walking the thread as
+ * posted, a large jump backwards is a day boundary, not someone quoting an earlier
+ * time. The gap has to be large — the shuffled-thread case ("14:47" posted before
+ * "14:32") jumps back by minutes, not hours, and must not trigger a rollover.
+ *
+ * This is the one place the module resolves rather than reports, because leaving it
+ * unresolved mis-orders an entire overnight incident. It still leaves a note.
+ */
+function applyDayRollover(events) {
+  let day = 0;
+  let previous = null;
+  let rollovers = 0;
+
+  for (const event of events) {
+    if (event.minutes === null) continue;
+
+    if (previous !== null && previous - event.minutes > ROLLOVER_GAP_MINUTES) {
+      day += 1;
+      rollovers += 1;
+    }
+
+    previous = event.minutes;
+    event.minutes += day * 1440;
+  }
+
+  return rollovers;
 }
 
 /**
@@ -237,6 +290,13 @@ export function normaliseAndSortEvents(rawEvents) {
   }));
 
   const notes = [];
+  const rollovers = applyDayRollover(events);
+  if (rollovers > 0) {
+    notes.push(
+      `The thread crosses midnight; times after the rollover have been treated as ` +
+        `the following day. Check this if the ordering looks wrong.`,
+    );
+  }
 
   const unreadable = events.filter((e) => e.minutes === null);
   for (const e of unreadable) {
